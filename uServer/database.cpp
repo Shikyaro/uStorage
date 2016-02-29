@@ -55,27 +55,53 @@ QString Database::getHalls()
     }
 }
 
-QString Database::getItemsHalls(int i)
+QJsonObject* Database::getItemsHalls(int i)
 {
     QSqlQuery query;
     QString querys;
-    query.prepare(QString("SELECT"
-                  "    items.itemId, "
-                  "    items.itemName, "
-                  "    items.itemInventoryNum, "
-                  "    itemgroups.itemGroupName, "
-                  "    items.itemComment "
-                  "    FROM"
-                  "    ("
-                  "        items "
-                  "        INNER JOIN itemshalls ON items.itemId = itemshalls.itemId "
-                  "    ) "
-                  "INNER JOIN itemgroups ON items.itemGroup = itemgroups.itemGroupId "
-                  "WHERE "
-                  "    itemshalls.hallId = %1").arg(i));
+    QJsonArray itemsArray;
+    QJsonObject itemsArrayContainer;
+
+    query.prepare(QString("SELECT "
+                          "    items.itemId, "
+                          "    items.itemName, "
+                          "    items.itemInventoryNum, "
+                          "    items.itemGroup, "
+                          "    itemgroups.itemGroupName, "
+                          "    itemshalls.itemCount "
+                          "FROM "
+                          "    items "
+                          "    INNER JOIN itemgroups ON items.itemGroup = itemgroups.itemGroupId "
+                          "INNER JOIN itemshalls ON items.itemId = itemshalls.itemId "
+                          "WHERE itemshalls.hallId = %1;").arg(i));
     if (query.exec()){
         while (query.next()) {
+            QJsonObject item;
+            item.insert("itemId", query.value(0).toInt());
+            item.insert("itemName", query.value(1).toString());
+            item.insert("itemInventoryNum", query.value(2).toString());
+            item.insert("itemGroup", query.value(3).toInt());
+            item.insert("itemGroupName", query.value(4).toString());
+            item.insert("itemCount", query.value(5).toInt());
 
+            itemsArray.append(item);
         }
+        itemsArrayContainer["itemsArray"] = itemsArray;
+
+        //qDebug() << itemsArrayContainer.isEmpty();
+
+        /*QJsonArray testParseArr = itemsArrayContainer["itemsArray"].toArray();
+
+        qDebug() << testParseArr.size();
+
+        QJsonObject testDepObj = testParseArr.at(0).toObject();
+        qDebug() << testDepObj["itemName"].toString();*/
+
+
+        return &itemsArrayContainer;
+
+    } else {
+        qDebug() << query.lastError().databaseText();
+        return NULL;
     }
 }

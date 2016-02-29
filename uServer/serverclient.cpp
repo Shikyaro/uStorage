@@ -64,6 +64,22 @@ void ServerClient::onReadyRead()
             } else {
                 this->sendBlock(unSuccLoginComm, NULL);
             }
+            break;
+        }
+        case getHallItems:
+        {
+            int hallid;
+            in >> hallid;
+            QJsonObject* itemsInHalls = servPtr->getItemsHalls(hallid);
+            if (itemsInHalls!=NULL){
+                QByteArray block;
+                QDataStream out(&block, QIODevice::WriteOnly);
+                out << itemsInHalls;
+                this->sendBlock(getHallItems, &block);
+            }else{
+                //eRRoR
+            }
+            break;
         }
         default:
             break;

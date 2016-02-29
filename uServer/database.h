@@ -7,6 +7,8 @@
 #include <QSqlError>
 #include <QVariant>
 #include <QDateTime>
+#include <QJsonArray>
+#include <QJsonObject>
 #include <QDebug>
 
 class Database : public QObject
@@ -21,7 +23,7 @@ public slots:
     bool initialize(QString hostname, QString dbName, QString username, QString password);
     bool login(QString username, QString password);
     QString getHalls();
-    QString getItemsHalls(int i);
+    QJsonObject *getItemsHalls(int i);
 private:
     QSqlDatabase db;
 };

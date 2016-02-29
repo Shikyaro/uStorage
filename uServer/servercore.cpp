@@ -30,6 +30,7 @@ void ServerCore::startServer()
         else
             qDebug() << "cant connect to db";
     }
+
 }
 
 bool ServerCore::login(QString username, QString password)
@@ -40,4 +41,9 @@ bool ServerCore::login(QString username, QString password)
 QString ServerCore::getHalls()
 {
     return db->getHalls();
+}
+
+QJsonObject ServerCore::getItemsHalls(int halid)
+{
+    return db->getItemsHalls(1);
 }
