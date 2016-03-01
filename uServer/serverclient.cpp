@@ -70,7 +70,7 @@ void ServerClient::onReadyRead()
         {
             int hallid;
             in >> hallid;
-            QJsonObject* itemsInHalls = servPtr->getItemsHalls(hallid);
+            QString itemsInHalls = servPtr->getItemsHalls(hallid);
             if (itemsInHalls!=NULL){
                 QByteArray block;
                 QDataStream out(&block, QIODevice::WriteOnly);

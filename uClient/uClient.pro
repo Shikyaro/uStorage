@@ -17,10 +17,12 @@ SOURCES += main.cpp\
     maincontroller.cpp \
     clientcore.cpp \
     halltabwidget.cpp \
-    loginwidget.cpp
+    loginwidget.cpp \
+    storeditem.cpp
 
 HEADERS  += mainwindow.h \
     maincontroller.h \
     clientcore.h \
     halltabwidget.h \
-    loginwidget.h
+    loginwidget.h \
+    storeditem.h

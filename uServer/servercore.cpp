@@ -43,7 +43,7 @@ QString ServerCore::getHalls()
     return db->getHalls();
 }
 
-QJsonObject ServerCore::getItemsHalls(int halid)
+QString ServerCore::getItemsHalls(int halid)
 {
-    return db->getItemsHalls(1);
+    return db->getItemsHalls(halid);
 }

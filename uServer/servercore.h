@@ -26,7 +26,7 @@ public slots:
     void startServer();
     bool login(QString username, QString password);
     QString getHalls();
-    QJsonObject getItemsHalls(int halid);
+    QString getItemsHalls(int halid);
 private:
     QList<ServerClient* > clientList;
     Database* db;

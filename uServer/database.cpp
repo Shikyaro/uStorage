@@ -55,7 +55,7 @@ QString Database::getHalls()
     }
 }
 
-QJsonObject* Database::getItemsHalls(int i)
+QString Database::getItemsHalls(int i)
 {
     QSqlQuery query;
     QString querys;
@@ -97,11 +97,13 @@ QJsonObject* Database::getItemsHalls(int i)
         QJsonObject testDepObj = testParseArr.at(0).toObject();
         qDebug() << testDepObj["itemName"].toString();*/
 
+        QJsonDocument itemsDoc(itemsArrayContainer);
 
-        return &itemsArrayContainer;
+
+        return itemsDoc.toJson(QJsonDocument::Compact);
 
     } else {
         qDebug() << query.lastError().databaseText();
-        return NULL;
+        return "NULL";
     }
 }

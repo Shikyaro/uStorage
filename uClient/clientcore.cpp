@@ -53,16 +53,36 @@ void ClientCore::onReadyRead()
                 emit this->addHall(hid.toUInt(), hall.at(1), hall.at(2), rnum.toInt(), hall.at(4));
 
             }
+            QByteArray blck;
+            QDataStream blOut(&blck, QIODevice::WriteOnly);
+
+            blOut << (int)1;
+
+            this->sendBlock(ServerClient::getHallItems, &blck);
 
             break;
         }
         case ServerClient::getHallItems:
         {
-            QJsonObject items2parse;
-            in >> items2parse;
-            QJsonArray itemsFromObj = items2parse["itemsArray"];
-            QJsonObject item1 = itemsFromObj.at(0).toObject();
-            qDebug() << item1["itemName"].toString();
+            QString itms;
+            in >> itms;
+
+            qDebug() << itms;
+
+            QJsonDocument itemsDoc = QJsonDocument::fromJson(itms.toUtf8());
+
+
+            QJsonObject items2parse = itemsDoc.object();
+
+
+            QJsonArray itemsFromObj = items2parse["itemsArray"].toArray();
+
+            for (int i = 0; i < itemsFromObj.size(); i++){
+                QJsonObject newItem = itemsFromObj.at(i).toObject();
+
+                qDebug() << newItem["itemName"].toString();
+            }
+
             break;
         }
         default:
