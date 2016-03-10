@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui network sql
+QMAKE_CXXFLAGS += -std=c++0x
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

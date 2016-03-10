@@ -13,6 +13,7 @@ MainController::MainController(QObject *parent) : QObject(parent)
     connect(client, SIGNAL(unSuccessLogin()), loginWidget, SLOT(onUnSuccessLogin()));
 
     connect(client, SIGNAL(addHall(uint,QString,QString,int,QString)), mainWindow, SLOT(addHall(uint,QString,QString,int,QString)));
+    connect(client, SIGNAL(addItem(int,QString,QString,int,QString,int)), mainWindow, SLOT(addItem(int,QString,QString,int,QString,int)));
 }
 MainController::~MainController()
 {

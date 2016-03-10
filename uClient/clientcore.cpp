@@ -51,6 +51,7 @@ void ClientCore::onReadyRead()
                 QString hid = hall.at(0);
 
                 emit this->addHall(hid.toUInt(), hall.at(1), hall.at(2), rnum.toInt(), hall.at(4));
+                qDebug() << "hall " << hall.at(1);
 
             }
             QByteArray blck;
@@ -80,8 +81,21 @@ void ClientCore::onReadyRead()
             for (int i = 0; i < itemsFromObj.size(); i++){
                 QJsonObject newItem = itemsFromObj.at(i).toObject();
 
-                qDebug() << newItem["itemName"].toString();
+                //storedItem* storItem = new storedItem(newItem["itemId"].toInt(),newItem["itemName"].toString());
+                addNewItem(newItem["itemId"].toInt(),
+                        newItem["itemName"].toString(),
+                        newItem["itemInventoryNum"].toString(),
+                        newItem["itemGroup"].toInt(),
+                        newItem["itemGroupName"].toString(),
+                        newItem["itemHallId"].toInt(),
+                        newItem["itemCount"].toInt());
             }
+
+            for(int j = 0; j < itemsInCurrHall.size(); j++){
+                qDebug() << itemsInCurrHall.at(j)->getId() << itemsInCurrHall.at(j)->getName();
+            }
+
+            itemsToTable();
 
             break;
         }
@@ -136,4 +150,24 @@ void ClientCore::sendBlock(quint8 command, QByteArray *data)
     out << quint16(block.size() - sizeof(quint16));
 
     mainSocket->write(block);
+}
+
+void ClientCore::addNewItem(int id, QString name, QString invNum, int grpId, QString comment, int hallId, int itmCount)
+{
+    storedItem* itm = new storedItem(id, name, invNum, grpId, comment, hallId, itmCount);
+
+    itemsInCurrHall.push_back(itm);
+
+    itemsInHal.insert(id, itm);
+}
+
+void ClientCore::itemsToTable()
+{
+    if (itemsInCurrHall.size()>0){
+        for (int i = 0; i < itemsInCurrHall.size(); i++){
+            storedItem* itm = itemsInCurrHall.at(i);
+            emit this->addItem(itm->getId(), itm->getName(), itm->getInvNumber(), itm->getGroupId(), itm->getComment(), itm->getItemCount());
+
+        }
+    }
 }

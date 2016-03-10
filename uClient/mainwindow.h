@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTabWidget>
 #include <halltabwidget.h>
+#include <QDebug>
 
 class MainWindow : public QMainWindow
 {
@@ -14,6 +15,7 @@ public:
     ~MainWindow();
 public slots:
     void addHall(uint nid, QString nname, QString naddr, int nroomn, QString ncomm);
+    void addItem(int nId, QString nName, QString nInv, int nGr, QString nCom, int nCou);
 private:
     QWidget* mainWidget;
     QTabWidget* hallTabs;

@@ -21,10 +21,13 @@ public:
                            QWidget *parent = 0);
 
     uint getHallId(){return hallId;}
+    QTableWidget* getItemTable(){return itemTable;}
+    void addRow(int nId, QString nName, QString nInv, int nGr, QString nCom, int nCou);
 
 signals:
 
 public slots:
+
 
 private:
     uint hallId;

@@ -30,3 +30,11 @@ void MainWindow::addHall(uint nid, QString nname, QString naddr, int nroomn, QSt
     HallTabWidget* widg = new HallTabWidget(nid, nname, naddr, nroomn, ncomm);
     hallTabs->addTab(widg, nname);
 }
+
+void MainWindow::addItem(int nId, QString nName, QString nInv, int nGr, QString nCom, int nCou)
+{
+    HallTabWidget *curTab = static_cast<HallTabWidget*>(hallTabs->widget(hallTabs->currentIndex()));
+    qDebug() << "additm";
+    curTab->addRow(nId, nName, nInv, nGr, nCom, nCou);
+
+}

@@ -25,8 +25,9 @@ HallTabWidget::HallTabWidget(uint nHallId,
     itemTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     itemTable->setSelectionMode(QAbstractItemView::SingleSelection);
     itemTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    itemTable->insertRow(0);
-    itemTable->insertRow(1);
+    //itemTable->insertRow(0);
+    //itemTable->insertRow(1);
+    //itemTable->insertRow(itemTable->rowCount()+1);
 
     editButtonBox = new QGroupBox("Редактирование");
     mainLayout->addWidget(editButtonBox,0,1);
@@ -42,5 +43,17 @@ HallTabWidget::HallTabWidget(uint nHallId,
     editButtonLayout->addWidget(deleteButton);
     editButtonLayout->addWidget(editButton);
     editButtonLayout->addStretch();
+}
+
+void HallTabWidget::addRow(int nId, QString nName, QString nInv, int nGr, QString nCom, int nCou)
+{
+    itemTable->insertRow(itemTable->rowCount());
+
+    itemTable->setItem(itemTable->rowCount()-1,0,new QTableWidgetItem(tr("%1").arg(nId)));
+    itemTable->setItem(itemTable->rowCount()-1,1,new QTableWidgetItem(tr("%1").arg(nName)));
+    itemTable->setItem(itemTable->rowCount()-1,2,new QTableWidgetItem(tr("%1").arg(nInv)));
+    itemTable->setItem(itemTable->rowCount()-1,3,new QTableWidgetItem(tr("%1").arg(nGr)));
+    itemTable->setItem(itemTable->rowCount()-1,4,new QTableWidgetItem(tr("%1").arg(nCom)));
+    itemTable->setItem(itemTable->rowCount()-1,5,new QTableWidgetItem(tr("%1").arg(nCou)));
 }
 
