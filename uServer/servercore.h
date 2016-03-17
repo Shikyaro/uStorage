@@ -27,6 +27,7 @@ public slots:
     bool login(QString username, QString password);
     QString getHalls();
     QString getItemsHalls(int halid);
+    QString getItemGroups();
 private:
     QList<ServerClient* > clientList;
     Database* db;

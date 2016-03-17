@@ -25,6 +25,8 @@ public slots:
     bool login(QString username, QString password);
     QString getHalls();
     QString getItemsHalls(int i);
+    QString getItemTypes();
+    void testGetId();
 private:
     QSqlDatabase db;
 };

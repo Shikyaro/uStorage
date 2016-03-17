@@ -71,7 +71,7 @@ void ServerClient::onReadyRead()
             int hallid;
             in >> hallid;
             QString itemsInHalls = servPtr->getItemsHalls(hallid);
-            if (itemsInHalls!=NULL){
+            if (itemsInHalls!="NULL"){
                 QByteArray block;
                 QDataStream out(&block, QIODevice::WriteOnly);
                 out << itemsInHalls;
@@ -79,6 +79,20 @@ void ServerClient::onReadyRead()
             }else{
                 //eRRoR
             }
+            break;
+        }
+        case getItemGroups:
+        {
+            QString itemGroups = servPtr->getItemGroups();
+            if (itemGroups!="NULL"){
+                QByteArray block;
+                QDataStream out(&block, QIODevice::WriteOnly);
+                out << itemGroups;
+                this->sendBlock(getItemGroups, &block);
+            }else{
+                //eRRoR
+            }
+
             break;
         }
         default:

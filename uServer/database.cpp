@@ -14,7 +14,14 @@ bool Database::initialize(QString hostname, QString dbName, QString username, QS
     db.setUserName(username);
     db.setPassword(password);
 
-    return db.open();
+    db.open();
+
+    testGetId();
+
+    //return db.open();
+    return true;
+
+
 }
 
 bool Database::login(QString username, QString password)
@@ -88,17 +95,7 @@ QString Database::getItemsHalls(int i)
         }
         itemsArrayContainer["itemsArray"] = itemsArray;
 
-        //qDebug() << itemsArrayContainer.isEmpty();
-
-        /*QJsonArray testParseArr = itemsArrayContainer["itemsArray"].toArray();
-
-        qDebug() << testParseArr.size();
-
-        QJsonObject testDepObj = testParseArr.at(0).toObject();
-        qDebug() << testDepObj["itemName"].toString();*/
-
         QJsonDocument itemsDoc(itemsArrayContainer);
-
 
         return itemsDoc.toJson(QJsonDocument::Compact);
 
@@ -106,4 +103,47 @@ QString Database::getItemsHalls(int i)
         qDebug() << query.lastError().databaseText();
         return "NULL";
     }
+}
+
+QString Database::getItemTypes()
+{
+    QSqlQuery query;
+    QJsonArray groupsArray;
+    QJsonObject groupsArrayContainer;
+
+    query.prepare(QString("SELECT *"
+                          "FROM itemgroups"));
+    if(query.exec()){
+        while(query.next()){
+            QJsonObject group;
+            group.insert("groupId", query.value(0).toInt());
+            group.insert("groupName", query.value(1).toString());
+            group.insert("groupComment", query.value(2).toString());
+
+            groupsArray.append(group);
+        }
+        groupsArrayContainer["groupsArray"] = groupsArray;
+
+        QJsonDocument groupsDoc(groupsArrayContainer);
+
+        return groupsDoc.toJson(QJsonDocument::Compact);
+
+    } else {
+        qDebug() << query.lastError().databaseText();
+        return "NULL";
+    }
+}
+
+void Database::testGetId()
+{
+    QSqlQuery query;
+    if(query.exec("CALL testGetId(@out)")){
+        query.exec("SELECT @out");
+        query.next();
+            qDebug() <<"id: " << query.value(0).toInt();
+
+    }else{
+        qDebug() << query.lastError().databaseText();
+    }
+
 }

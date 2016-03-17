@@ -19,11 +19,13 @@ SOURCES += main.cpp\
     clientcore.cpp \
     halltabwidget.cpp \
     loginwidget.cpp \
-    storeditem.cpp
+    storeditem.cpp \
+    itemgroup.cpp
 
 HEADERS  += mainwindow.h \
     maincontroller.h \
     clientcore.h \
     halltabwidget.h \
     loginwidget.h \
-    storeditem.h
+    storeditem.h \
+    itemgroup.h

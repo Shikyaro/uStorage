@@ -24,6 +24,10 @@ public:
     static const quint8 unSuccLoginComm = 4;
     static const quint8 getHallsComm = 5;
     static const quint8 getHallItems = 6;
+    static const quint8 getItemGroups = 7;
+    static const quint8 editItemGroup = 9;
+    static const quint8 editItem = 10;
+    static const quint8 editHall = 11;
 
 signals:
 

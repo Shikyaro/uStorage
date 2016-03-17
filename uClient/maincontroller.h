@@ -6,6 +6,7 @@
 #include "loginwidget.h"
 #include "clientcore.h"
 
+class ClientCore;
 class MainController : public QObject
 {
     Q_OBJECT
@@ -13,6 +14,7 @@ public:
     explicit MainController(QObject *parent = 0);
     ~MainController();
     void showInterface();
+    int getCurrHallId(){return mainWindow->getCurrHallId();}
 
 signals:
 

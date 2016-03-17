@@ -47,3 +47,8 @@ QString ServerCore::getItemsHalls(int halid)
 {
     return db->getItemsHalls(halid);
 }
+
+QString ServerCore::getItemGroups()
+{
+    return db->getItemTypes();
+}

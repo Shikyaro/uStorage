@@ -4,6 +4,8 @@ ClientCore::ClientCore(QObject *parent) : QObject(parent)
 {
     mainSocket = new QTcpSocket();
 
+    mCPointer = static_cast<MainController*>(parent);
+
     connect(mainSocket,SIGNAL(readyRead()),this,SLOT(onReadyRead()));
 }
 
@@ -52,14 +54,9 @@ void ClientCore::onReadyRead()
 
                 emit this->addHall(hid.toUInt(), hall.at(1), hall.at(2), rnum.toInt(), hall.at(4));
                 qDebug() << "hall " << hall.at(1);
-
             }
-            QByteArray blck;
-            QDataStream blOut(&blck, QIODevice::WriteOnly);
 
-            blOut << (int)1;
-
-            this->sendBlock(ServerClient::getHallItems, &blck);
+            getItemsFromHall(mCPointer->getCurrHallId());
 
             break;
         }
@@ -72,16 +69,12 @@ void ClientCore::onReadyRead()
 
             QJsonDocument itemsDoc = QJsonDocument::fromJson(itms.toUtf8());
 
-
             QJsonObject items2parse = itemsDoc.object();
-
 
             QJsonArray itemsFromObj = items2parse["itemsArray"].toArray();
 
             for (int i = 0; i < itemsFromObj.size(); i++){
                 QJsonObject newItem = itemsFromObj.at(i).toObject();
-
-                //storedItem* storItem = new storedItem(newItem["itemId"].toInt(),newItem["itemName"].toString());
                 addNewItem(newItem["itemId"].toInt(),
                         newItem["itemName"].toString(),
                         newItem["itemInventoryNum"].toString(),
@@ -99,6 +92,24 @@ void ClientCore::onReadyRead()
 
             break;
         }
+        case ServerClient::getItemGroups:
+        {
+            QString groups;
+            in >> groups;
+
+            QJsonDocument groupsDoc = QJsonDocument::fromJson(groups.toUtf8());
+            QJsonObject groups2parse = groupsDoc.object();
+
+            QJsonArray groupsFromObj = groups2parse["groupsArray"].toArray();
+
+            for (int i = 0; i < groupsFromObj.size(); i++){
+                QJsonObject newGroup = groupsFromObj.at(i).toObject();
+
+            }
+
+            qDebug() << groups;
+            break;
+        }
         default:
             break;
         }
@@ -113,6 +124,16 @@ bool ClientCore::connectToServer(QString ip, quint16 port)
 
     }
     return isConnected;
+}
+
+void ClientCore::getItemsFromHall(int id)
+{
+    QByteArray blck;
+    QDataStream blOut(&blck, QIODevice::WriteOnly);
+
+    blOut << id;
+
+    this->sendBlock(ServerClient::getHallItems, &blck);
 }
 
 void ClientCore::login(QString ipAddr, QString login, QString password)
@@ -141,7 +162,6 @@ void ClientCore::sendBlock(quint8 command, QByteArray *data)
 
     out << quint16(0);
     out << command;
-    //out << *data;
     if (data!=NULL){
         block.append(*data);
     }
@@ -158,7 +178,7 @@ void ClientCore::addNewItem(int id, QString name, QString invNum, int grpId, QSt
 
     itemsInCurrHall.push_back(itm);
 
-    itemsInHal.insert(id, itm);
+    //itemsInHal.insert(id, itm);
 }
 
 void ClientCore::itemsToTable()
@@ -170,4 +190,26 @@ void ClientCore::itemsToTable()
 
         }
     }
+}
+
+void ClientCore::editGroup(int id, QString name, QString comment)
+{
+    QJsonObject group2edit;
+
+    group2edit["groupId"] = id;
+    group2edit["groupName"] = name;
+    group2edit["groupComment"] = comment;
+
+    QJsonDocument groupDoc(group2edit);
+
+    QString groupStr = groupDoc.toJson(QJsonDocument::Compact);
+
+    QByteArray block;
+    QDataStream in(&block, QIODevice::WriteOnly);
+
+    in << groupStr;
+
+    this->sendBlock(ServerClient::editItemGroup, &block);
+
+
 }

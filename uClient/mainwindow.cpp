@@ -38,3 +38,9 @@ void MainWindow::addItem(int nId, QString nName, QString nInv, int nGr, QString 
     curTab->addRow(nId, nName, nInv, nGr, nCom, nCou);
 
 }
+
+int MainWindow::getCurrHallId()
+{
+    HallTabWidget* curTab = static_cast<HallTabWidget*>(hallTabs->widget(hallTabs->currentIndex()));
+    return curTab->getHallId();
+}

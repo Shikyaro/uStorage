@@ -5,7 +5,7 @@ MainController::MainController(QObject *parent) : QObject(parent)
     mainWindow = new MainWindow();
     loginWidget = new LoginWidget();
 
-    client = new ClientCore();
+    client = new ClientCore(this);
 
     connect(loginWidget, SIGNAL(login(QString,QString,QString)), client, SLOT(login(QString,QString,QString)));
 
