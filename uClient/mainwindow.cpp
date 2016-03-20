@@ -18,6 +18,20 @@ MainWindow::MainWindow(QWidget *parent)
     //HallTabWidget* widg = new HallTabWidget(1);
     //hallTabs->addTab(widg,"123");
 
+    QMenuBar *mainMenuBar = new QMenuBar();
+
+    QMenu *mainMenu = new QMenu("Главное");
+
+    mainMenuBar->addMenu(mainMenu);
+
+    mainLayout->setMenuBar(mainMenuBar);
+
+    QAction *groupsMenu = new QAction("Работа с группами", mainMenu);
+
+    mainMenu->addAction(groupsMenu);
+
+    connect(groupsMenu, SIGNAL(triggered(bool)), this, SLOT(on_openGroup()));
+
 }
 
 MainWindow::~MainWindow()
@@ -43,4 +57,9 @@ int MainWindow::getCurrHallId()
 {
     HallTabWidget* curTab = static_cast<HallTabWidget*>(hallTabs->widget(hallTabs->currentIndex()));
     return curTab->getHallId();
+}
+
+void MainWindow::on_openGroup()
+{
+    emit this->openGroupMenu();
 }

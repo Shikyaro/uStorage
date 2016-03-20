@@ -6,6 +6,8 @@
 #include <halltabwidget.h>
 #include <QDebug>
 #include <QMenu>
+#include <QMenuBar>
+#include <QAction>
 
 class MainWindow : public QMainWindow
 {
@@ -18,9 +20,15 @@ public:
 public slots:
     void addHall(uint nid, QString nname, QString naddr, int nroomn, QString ncomm);
     void addItem(int nId, QString nName, QString nInv, int nGr, QString nCom, int nCou);
+signals:
+    void openGroupMenu();
+
 private:
     QWidget* mainWidget;
     QTabWidget* hallTabs;
+
+private slots:
+    void on_openGroup();
 };
 
 #endif // MAINWINDOW_H

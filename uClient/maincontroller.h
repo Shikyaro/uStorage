@@ -20,6 +20,7 @@ signals:
 
 public slots:
     void onSuccessLogin();
+    void openGroupMenu();
 private:
     MainWindow* mainWindow;
     LoginWidget* loginWidget;

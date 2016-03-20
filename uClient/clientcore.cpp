@@ -105,6 +105,14 @@ void ClientCore::onReadyRead()
             for (int i = 0; i < groupsFromObj.size(); i++){
                 QJsonObject newGroup = groupsFromObj.at(i).toObject();
 
+                groupItem* newGrp = new groupItem;
+
+                newGrp->id = newGroup["groupId"].toInt();
+                newGrp->name = newGroup["groupName"].toString();
+                newGrp->comment = newGroup["groupComment"].toString();
+
+                groupsOfItem.append(newGrp);
+
             }
 
             qDebug() << groups;

@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     halltabwidget.cpp \
     loginwidget.cpp \
     storeditem.cpp \
-    itemgroup.cpp
+    itemgroup.cpp \
+    groupwidget.cpp
 
 HEADERS  += mainwindow.h \
     maincontroller.h \
@@ -28,4 +29,5 @@ HEADERS  += mainwindow.h \
     halltabwidget.h \
     loginwidget.h \
     storeditem.h \
-    itemgroup.h
+    itemgroup.h \
+    groupwidget.h
