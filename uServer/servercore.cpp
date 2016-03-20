@@ -52,3 +52,8 @@ QString ServerCore::getItemGroups()
 {
     return db->getItemTypes();
 }
+
+bool ServerCore::updateGroups(int id, QString name, QString comment)
+{
+    return db->updateGroup(id, name, comment);
+}

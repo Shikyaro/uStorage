@@ -95,6 +95,22 @@ void ServerClient::onReadyRead()
 
             break;
         }
+        case editItemGroup:
+        {
+            QString itemGroup;
+
+            in >> itemGroup;
+
+            QJsonDocument itemGroupDoc = QJsonDocument::fromJson(itemGroup.toUtf8());
+            QJsonObject group2edit = itemGroupDoc.object();
+
+            if(!servPtr->updateGroups(group2edit["groupId"].toInt(),
+                                     group2edit["groupName"].toString(),
+                                     group2edit["groupComment"].toString()))
+            {
+                //eRRoR
+            }
+        }
         default:
             break;
         }

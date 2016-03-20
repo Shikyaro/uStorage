@@ -5,6 +5,7 @@
 #include <QTabWidget>
 #include <halltabwidget.h>
 #include <QDebug>
+#include <QMenu>
 
 class MainWindow : public QMainWindow
 {

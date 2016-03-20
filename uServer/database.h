@@ -27,6 +27,8 @@ public slots:
     QString getItemsHalls(int i);
     QString getItemTypes();
     void testGetId();
+
+    bool updateGroup(int id, QString name, QString comment);
 private:
     QSqlDatabase db;
 };

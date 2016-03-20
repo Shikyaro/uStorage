@@ -16,10 +16,8 @@ bool Database::initialize(QString hostname, QString dbName, QString username, QS
 
     db.open();
 
-    testGetId();
-
-    //return db.open();
-    return true;
+    return db.open();
+    //return true;
 
 
 }
@@ -146,4 +144,20 @@ void Database::testGetId()
         qDebug() << query.lastError().databaseText();
     }
 
+}
+
+bool Database::updateGroup(int id, QString name, QString comment)
+{
+    QSqlQuery query;
+
+    query.prepare(QString("UPDATE itemgroups "
+                          "SET itemGroupName = '%2', "
+                          "itemGroupComment = '%3' "
+                          "WHERE itemGroupId = %1").arg(id).arg(name).arg(comment));
+    if(query.exec()){
+        return true;
+    }else{
+        qDebug() << query.lastError().databaseText();
+        return false;
+    }
 }
