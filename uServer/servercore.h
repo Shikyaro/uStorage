@@ -29,6 +29,8 @@ public slots:
     QString getItemsHalls(int halid);
     QString getItemGroups();
     bool updateGroups(int id, QString name, QString comment);
+    bool insertGroup(QString name, QString comment);
+    bool deleteGroup(int id);
 private:
     QList<ServerClient* > clientList;
     Database* db;

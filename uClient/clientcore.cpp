@@ -94,6 +94,7 @@ void ClientCore::onReadyRead()
         }
         case ServerClient::getItemGroups:
         {
+            emit this->groupAd(false);
             QString groups;
             in >> groups;
 
@@ -101,6 +102,8 @@ void ClientCore::onReadyRead()
             QJsonObject groups2parse = groupsDoc.object();
 
             QJsonArray groupsFromObj = groups2parse["groupsArray"].toArray();
+
+            groupsOfItem.clear();
 
             for (int i = 0; i < groupsFromObj.size(); i++){
                 QJsonObject newGroup = groupsFromObj.at(i).toObject();
@@ -116,6 +119,28 @@ void ClientCore::onReadyRead()
             }
 
             qDebug() << groups;
+            groupsToTable();
+
+            emit this->groupAd(true);
+
+            break;
+        }
+        case ServerClient::succEditItem:
+        {
+            /*emit this->groupClear();
+            ifNeedForGroups();
+            break;*/
+        }
+        case ServerClient::succAddGroup:
+        {
+            /*emit this->groupClear();
+            ifNeedForGroups();
+            break;*/
+        }
+        case ServerClient::succDelGroup:
+        {
+            emit this->groupClear();
+            ifNeedForGroups();
             break;
         }
         default:
@@ -194,8 +219,12 @@ void ClientCore::itemsToTable()
     if (itemsInCurrHall.size()>0){
         for (int i = 0; i < itemsInCurrHall.size(); i++){
             storedItem* itm = itemsInCurrHall.at(i);
-            emit this->addItem(itm->getId(), itm->getName(), itm->getInvNumber(), itm->getGroupId(), itm->getComment(), itm->getItemCount());
-
+            emit this->addItem(itm->getId(),
+                               itm->getName(),
+                               itm->getInvNumber(),
+                               itm->getGroupId(),
+                               itm->getComment(),
+                               itm->getItemCount());
         }
     }
 }
@@ -219,5 +248,58 @@ void ClientCore::editGroup(int id, QString name, QString comment)
 
     this->sendBlock(ServerClient::editItemGroup, &block);
 
+}
 
+void ClientCore::ifNeedForGroups()
+{
+    this->sendBlock(ServerClient::getItemGroups, NULL);
+    qDebug() << "nfg";
+}
+
+void ClientCore::groupsToTable()
+{
+    if(groupsOfItem.size()>0){
+        qDebug() << "not gr null";
+        for(int i = 0; i < groupsOfItem.size(); i++){
+            groupItem* gr = groupsOfItem.at(i);
+            emit this->addGroup(gr->id, gr->name, gr->comment);
+        }
+    }
+}
+
+void ClientCore::insertGroup(QString name, QString comment)
+{
+    QJsonObject insGr;
+
+    insGr["groupName"] = name;
+    insGr["groupComment"] = comment;
+
+    QJsonDocument groupDoc(insGr);
+
+    QString groupStr = groupDoc.toJson(QJsonDocument::Compact);
+
+    QByteArray block;
+    QDataStream in(&block, QIODevice::WriteOnly);
+
+    in << groupStr;
+
+    this->sendBlock(ServerClient::addGroup, &block);
+}
+
+void ClientCore::deleteGroup(int id)
+{
+    QJsonObject gr2del;
+
+    gr2del["groupId"] = id;
+
+    QJsonDocument groupDoc(gr2del);
+
+    QString groupStr = groupDoc.toJson(QJsonDocument::Compact);
+
+    QByteArray block;
+    QDataStream in(&block, QIODevice::WriteOnly);
+
+    in << groupStr;
+
+    this->sendBlock(ServerClient::delGroup, &block);
 }

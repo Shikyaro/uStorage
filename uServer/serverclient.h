@@ -28,6 +28,11 @@ public:
     static const quint8 editItemGroup = 9;
     static const quint8 editItem = 10;
     static const quint8 editHall = 11;
+    static const quint8 succEditItem = 12;
+    static const quint8 addGroup = 13;
+    static const quint8 succAddGroup = 14;
+    static const quint8 delGroup = 15;
+    static const quint8 succDelGroup = 16;
 
 signals:
 

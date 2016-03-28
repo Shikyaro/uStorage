@@ -57,3 +57,13 @@ bool ServerCore::updateGroups(int id, QString name, QString comment)
 {
     return db->updateGroup(id, name, comment);
 }
+
+bool ServerCore::insertGroup(QString name, QString comment)
+{
+    return db->insertGroup(name, comment);
+}
+
+bool ServerCore::deleteGroup(int id)
+{
+    return db->deleteGroup(id);
+}

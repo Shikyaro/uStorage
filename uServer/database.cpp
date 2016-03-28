@@ -161,3 +161,31 @@ bool Database::updateGroup(int id, QString name, QString comment)
         return false;
     }
 }
+
+bool Database::insertGroup(QString name, QString comment)
+{
+    QSqlQuery query;
+
+    query.prepare(QString("INSERT into itemgroups(itemGroupName, itemGroupComment) "
+                          "VALUES (\"%1\", \"%2\")").arg(name, comment));
+    if(query.exec()){
+        return true;
+    }else{
+        qDebug() << query.lastError().databaseText();
+        return false;
+    }
+}
+
+bool Database::deleteGroup(int id)
+{
+    QSqlQuery query;
+
+    query.prepare(QString("DELETE FROM itemgroups "
+                          "WHERE itemGroupId = %1").arg(id));
+    if(query.exec()){
+        return true;
+    }else{
+        qDebug() << query.lastError().databaseText();
+        return false;
+    }
+}

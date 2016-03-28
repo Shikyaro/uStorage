@@ -36,6 +36,9 @@ signals:
 
     void addHall(uint, QString , QString, int, QString);
     void addItem(int, QString, QString, int, QString, int);
+    void addGroup(int, QString, QString);
+    void groupAd(bool);
+    void groupClear();
 
 public slots:
     bool connectToServer(QString ip, quint16 port);
@@ -43,8 +46,13 @@ public slots:
     void addNewItem(int id, QString name, QString invNum, int grpId, QString comment, int hallId, int itmCount);
     void itemsToTable();
     void getItemsFromHall(int id);
+    void ifNeedForGroups();
 
     void editGroup(int id, QString name, QString comment);
+    void groupsToTable();
+    void insertGroup(QString name, QString comment);
+    void deleteGroup(int id);
+
 private:
     QTcpSocket* mainSocket;
     bool isConnected = false;

@@ -29,6 +29,8 @@ public slots:
     void testGetId();
 
     bool updateGroup(int id, QString name, QString comment);
+    bool insertGroup(QString name, QString comment);
+    bool deleteGroup(int id);
 private:
     QSqlDatabase db;
 };

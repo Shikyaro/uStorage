@@ -109,7 +109,46 @@ void ServerClient::onReadyRead()
                                      group2edit["groupComment"].toString()))
             {
                 //eRRoR
+            }else{
+                this->sendBlock(succEditItem, NULL);
             }
+            break;
+        }
+        case addGroup:
+        {
+            QString itemGroup;
+
+            in >> itemGroup;
+
+            QJsonDocument itemGroupDoc = QJsonDocument::fromJson(itemGroup.toUtf8());
+            QJsonObject newGr = itemGroupDoc.object();
+
+            if(!servPtr->insertGroup(newGr["groupName"].toString(),
+                                     newGr["groupComment"].toString()))
+            {
+                //eRRoR
+            }else{
+                this->sendBlock(succAddGroup, NULL);
+            }
+            break;
+        }
+        case delGroup:
+        {
+            QString itemGroup;
+
+            in >> itemGroup;
+
+            QJsonDocument itemGroupDoc = QJsonDocument::fromJson(itemGroup.toUtf8());
+            QJsonObject newGr = itemGroupDoc.object();
+
+            if(!servPtr->deleteGroup(newGr["groupId"].toInt()))
+            {
+                //eRRoR
+            }else{
+                this->sendBlock(succDelGroup, NULL);
+            }
+            break;
+
         }
         default:
             break;

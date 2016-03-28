@@ -5,6 +5,7 @@
 #include "mainwindow.h"
 #include "loginwidget.h"
 #include "clientcore.h"
+#include "groupwidget.h"
 
 class ClientCore;
 class MainController : public QObject
@@ -17,14 +18,17 @@ public:
     int getCurrHallId(){return mainWindow->getCurrHallId();}
 
 signals:
+    void needGroups();
 
 public slots:
     void onSuccessLogin();
     void openGroupMenu();
+
 private:
     MainWindow* mainWindow;
     LoginWidget* loginWidget;
     ClientCore* client;
+    GroupWidget* groups;
 
 };
 
