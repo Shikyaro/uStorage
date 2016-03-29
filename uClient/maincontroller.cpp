@@ -14,7 +14,7 @@ MainController::MainController(QObject *parent) : QObject(parent)
     connect(client, SIGNAL(unSuccessLogin()), loginWidget, SLOT(onUnSuccessLogin()));
 
     connect(client, SIGNAL(addHall(uint,QString,QString,int,QString)), mainWindow, SLOT(addHall(uint,QString,QString,int,QString)));
-    connect(client, SIGNAL(addItem(int,QString,QString,int,QString,int)), mainWindow, SLOT(addItem(int,QString,QString,int,QString,int)));
+    connect(client, SIGNAL(addItem(int,QString,QString,QString,QString,int)), mainWindow, SLOT(addItem(int,QString,QString,QString,QString,int)));
 
     connect(mainWindow, SIGNAL(openGroupMenu()), this, SLOT(openGroupMenu()));
 
@@ -29,6 +29,8 @@ MainController::MainController(QObject *parent) : QObject(parent)
     connect(groups, SIGNAL(onAddClicked(QString,QString)), client, SLOT(insertGroup(QString,QString)));
 
     connect(groups, SIGNAL(onDelClicked(int)), client, SLOT(deleteGroup(int)));
+
+    connect(client, SIGNAL(groupsToBox(QList<groupItem*>*)), mainWindow, SLOT(load2box(QList<groupItem*>*)));
 
 }
 MainController::~MainController()

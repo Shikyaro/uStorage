@@ -15,11 +15,11 @@
 
 class MainController;
 
-struct groupItem{
+/*struct groupItem{
     int id;
     QString name;
     QString comment;
-};
+};*/
 
 class ClientCore : public QObject
 {
@@ -35,15 +35,17 @@ signals:
     void unSuccessLogin();
 
     void addHall(uint, QString , QString, int, QString);
-    void addItem(int, QString, QString, int, QString, int);
+    void addItem(int, QString, QString, QString, QString, int);
     void addGroup(int, QString, QString);
     void groupAd(bool);
     void groupClear();
 
+    void groupsToBox(QList<groupItem*> *);
+
 public slots:
     bool connectToServer(QString ip, quint16 port);
     void login(QString ipAddr, QString login, QString password);
-    void addNewItem(int id, QString name, QString invNum, int grpId, QString comment, int hallId, int itmCount);
+    void addNewItem(int id, QString name, QString invNum, int grpId, QString comment, int hallId, int itmCount, QString grNme);
     void itemsToTable();
     void getItemsFromHall(int id);
     void ifNeedForGroups();
@@ -52,6 +54,7 @@ public slots:
     void groupsToTable();
     void insertGroup(QString name, QString comment);
     void deleteGroup(int id);
+    //void groupsToBox();
 
 private:
     QTcpSocket* mainSocket;

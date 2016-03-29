@@ -79,9 +79,10 @@ void ClientCore::onReadyRead()
                         newItem["itemName"].toString(),
                         newItem["itemInventoryNum"].toString(),
                         newItem["itemGroup"].toInt(),
-                        newItem["itemGroupName"].toString(),
+                        newItem["itemComment"].toString(),
                         newItem["itemHallId"].toInt(),
-                        newItem["itemCount"].toInt());
+                        newItem["itemCount"].toInt(),
+                        newItem["itemGroupName"].toString());
             }
 
             for(int j = 0; j < itemsInCurrHall.size(); j++){
@@ -89,6 +90,7 @@ void ClientCore::onReadyRead()
             }
 
             itemsToTable();
+            ifNeedForGroups();
 
             break;
         }
@@ -205,9 +207,9 @@ void ClientCore::sendBlock(quint8 command, QByteArray *data)
     mainSocket->write(block);
 }
 
-void ClientCore::addNewItem(int id, QString name, QString invNum, int grpId, QString comment, int hallId, int itmCount)
+void ClientCore::addNewItem(int id, QString name, QString invNum, int grpId, QString comment, int hallId, int itmCount, QString grNme)
 {
-    storedItem* itm = new storedItem(id, name, invNum, grpId, comment, hallId, itmCount);
+    storedItem* itm = new storedItem(id, name, invNum, grpId, comment, hallId, itmCount, grNme);
 
     itemsInCurrHall.push_back(itm);
 
@@ -222,7 +224,7 @@ void ClientCore::itemsToTable()
             emit this->addItem(itm->getId(),
                                itm->getName(),
                                itm->getInvNumber(),
-                               itm->getGroupId(),
+                               itm->getGroupName(),
                                itm->getComment(),
                                itm->getItemCount());
         }
@@ -265,6 +267,7 @@ void ClientCore::groupsToTable()
             emit this->addGroup(gr->id, gr->name, gr->comment);
         }
     }
+    emit this->groupsToBox(&groupsOfItem);
 }
 
 void ClientCore::insertGroup(QString name, QString comment)

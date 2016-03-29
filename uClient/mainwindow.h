@@ -19,7 +19,8 @@ public:
     int getCurrHallId();
 public slots:
     void addHall(uint nid, QString nname, QString naddr, int nroomn, QString ncomm);
-    void addItem(int nId, QString nName, QString nInv, int nGr, QString nCom, int nCou);
+    void addItem(int nId, QString nName, QString nInv, QString nGr, QString nCom, int nCou);
+    void load2box(QList<groupItem*> *lis);
 signals:
     void openGroupMenu();
 

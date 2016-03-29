@@ -45,7 +45,7 @@ void MainWindow::addHall(uint nid, QString nname, QString naddr, int nroomn, QSt
     hallTabs->addTab(widg, nname);
 }
 
-void MainWindow::addItem(int nId, QString nName, QString nInv, int nGr, QString nCom, int nCou)
+void MainWindow::addItem(int nId, QString nName, QString nInv, QString nGr, QString nCom, int nCou)
 {
     HallTabWidget *curTab = static_cast<HallTabWidget*>(hallTabs->widget(hallTabs->currentIndex()));
     qDebug() << "additm";
@@ -62,4 +62,10 @@ int MainWindow::getCurrHallId()
 void MainWindow::on_openGroup()
 {
     emit this->openGroupMenu();
+}
+
+void MainWindow::load2box(QList<groupItem *> *lis)
+{
+    qDebug() << "lod mwid";
+    static_cast<HallTabWidget*>(hallTabs->widget(hallTabs->currentIndex()))->loadToBox(lis);
 }

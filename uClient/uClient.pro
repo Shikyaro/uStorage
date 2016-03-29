@@ -30,4 +30,5 @@ HEADERS  += mainwindow.h \
     loginwidget.h \
     storeditem.h \
     itemgroup.h \
-    groupwidget.h
+    groupwidget.h \
+    groupitem.h

@@ -73,7 +73,8 @@ QString Database::getItemsHalls(int i)
                           "    items.itemInventoryNum, "
                           "    items.itemGroup, "
                           "    itemgroups.itemGroupName, "
-                          "    itemshalls.itemCount "
+                          "    itemshalls.itemCount,"
+                          "    items.itemComment "
                           "FROM "
                           "    items "
                           "    INNER JOIN itemgroups ON items.itemGroup = itemgroups.itemGroupId "
@@ -88,6 +89,7 @@ QString Database::getItemsHalls(int i)
             item.insert("itemGroup", query.value(3).toInt());
             item.insert("itemGroupName", query.value(4).toString());
             item.insert("itemCount", query.value(5).toInt());
+            item.insert("itemComment", query.value(6).toString());
 
             itemsArray.append(item);
         }

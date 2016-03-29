@@ -7,6 +7,7 @@ storedItem::storedItem(int nId,
                        QString nCom,
                        int nHaId,
                        int nCount,
+                       QString nGname,
                        QObject *parent) : QObject(parent)
 {
     itemId = nId;
@@ -16,6 +17,7 @@ storedItem::storedItem(int nId,
     itemComment = nCom;
     itemHallId = nHaId;
     itemCount = nCount;
+    groupName = nGname;
 }
 
 void storedItem::setName(QString newName)

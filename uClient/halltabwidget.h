@@ -8,6 +8,9 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QPushButton>
+#include <QLineEdit>
+#include <QComboBox>
+#include <groupitem.h>
 
 class HallTabWidget : public QWidget
 {
@@ -22,11 +25,12 @@ public:
 
     int getHallId(){return hallId;}
     QTableWidget* getItemTable(){return itemTable;}
-    void addRow(int nId, QString nName, QString nInv, int nGr, QString nCom, int nCou);
+    void addRow(int nId, QString nName, QString nInv, QString nGr, QString nCom, int nCou);
 
 signals:
 
 public slots:
+    void loadToBox(QList<groupItem*> *list);
 
 
 private:
@@ -45,6 +49,9 @@ private:
     QPushButton* editButton;
 
     QVBoxLayout* editButtonLayout;
+
+    QLineEdit* iId, *iName, *iInv, *iCom, *iCou;
+    QComboBox* grBox;
 };
 
 #endif // HALLTABWIDGET_H

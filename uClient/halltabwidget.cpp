@@ -15,6 +15,7 @@ HallTabWidget::HallTabWidget(uint nHallId,
 
     mainLayout = new QGridLayout(this);
     this->setLayout(mainLayout);
+    this->setMinimumWidth(640);
 
     itemTable = new QTableWidget(this);
     mainLayout->addWidget(itemTable,0,0);
@@ -43,9 +44,31 @@ HallTabWidget::HallTabWidget(uint nHallId,
     editButtonLayout->addWidget(deleteButton);
     editButtonLayout->addWidget(editButton);
     editButtonLayout->addStretch();
+
+    QHBoxLayout* editLay = new QHBoxLayout();
+    mainLayout->addLayout(editLay,1,0);
+
+    grBox = new QComboBox();
+    grBox->setMinimumWidth(130);
+
+
+    iId = new QLineEdit();
+    iId->setReadOnly(true);
+
+    iName = new QLineEdit();
+    iInv = new QLineEdit();
+    iCom = new QLineEdit();
+    iCou = new QLineEdit();
+
+    editLay->addWidget(iId);
+    editLay->addWidget(iName);
+    editLay->addWidget(iInv);
+    editLay->addWidget(grBox);
+    editLay->addWidget(iCom);
+    editLay->addWidget(iCou);
 }
 
-void HallTabWidget::addRow(int nId, QString nName, QString nInv, int nGr, QString nCom, int nCou)
+void HallTabWidget::addRow(int nId, QString nName, QString nInv, QString nGr, QString nCom, int nCou)
 {
     itemTable->insertRow(itemTable->rowCount());
 
@@ -55,5 +78,14 @@ void HallTabWidget::addRow(int nId, QString nName, QString nInv, int nGr, QStrin
     itemTable->setItem(itemTable->rowCount()-1,3,new QTableWidgetItem(tr("%1").arg(nGr)));
     itemTable->setItem(itemTable->rowCount()-1,4,new QTableWidgetItem(tr("%1").arg(nCom)));
     itemTable->setItem(itemTable->rowCount()-1,5,new QTableWidgetItem(tr("%1").arg(nCou)));
+}
+
+void HallTabWidget::loadToBox(QList<groupItem *> *list)
+{
+    //qDebug() << "lod hwid";
+    grBox->clear();
+    for (int i = 0; i < list->size(); i++){
+        grBox->addItem(list->at(i)->name);
+    }
 }
 

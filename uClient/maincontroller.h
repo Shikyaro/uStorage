@@ -2,7 +2,7 @@
 #define MAINCONTROLLER_H
 
 #include <QObject>
-#include "mainwindow.h"
+#include <mainwindow.h>
 #include "loginwidget.h"
 #include "clientcore.h"
 #include "groupwidget.h"
