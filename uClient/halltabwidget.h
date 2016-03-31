@@ -34,6 +34,10 @@ signals:
     void onAddS(int id, QString name, QString inv, QString grp, QString com, int count);
     void onDeleteS(int id);
 
+    void onModHalS(int, QString, QString, int);
+    void onAddHalS(QString, QString, int);
+    void onDelHalS(int);
+
 public slots:
     void loadToBox(QList<groupItem*> *list);
     void onChanClicked();
@@ -42,6 +46,14 @@ public slots:
     void onEdit();
     void onAdd();
     void onDelete();
+
+    void reloadFields();
+
+    void onModHal();
+    void onAddHal();
+    void onDelHal();
+
+    void updHallData(int id, QString name, QString adr, int romNum);
 private slots:
     void onSelect();
 
@@ -65,6 +77,9 @@ private:
 
     QLineEdit* iId, *iName, *iInv, *iCom, *iCou;
     QComboBox* grBox;
+
+    QLineEdit* hId, *hName, *hAddr, *hRoom;
+    QPushButton* adHal, *modHal, *delHal;
 
     bool isDat = false;
 };

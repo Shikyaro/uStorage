@@ -39,6 +39,12 @@ public:
     static const quint8 succModItem = 20;
     static const quint8 delItem = 21;
     static const quint8 succDelItem = 22;
+    static const quint8 modHall = 23;
+    static const quint8 succModHall = 24;
+    static const quint8 addHall = 25;
+    static const quint8 succAddHall = 26;
+    static const quint8 delHall = 27;
+    static const quint8 succDelHall = 28;
 
 signals:
 

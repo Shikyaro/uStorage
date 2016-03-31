@@ -42,6 +42,8 @@ signals:
 
     void groupsToBox(QList<groupItem*> *);
 
+    void updateCurHall(int, QString, QString, int);
+
 public slots:
     bool connectToServer(QString ip, quint16 port);
     void login(QString ipAddr, QString login, QString password);
@@ -60,6 +62,9 @@ public slots:
     void editItem(int id, QString name, QString inv, QString grp, QString com, int count);
     void deleteItem(int id);
 
+    void editHall(int id, QString name, QString addr, int room);
+    void insertHall(QString name, QString addr, int room);
+    void delHall(int id);
 private:
     QTcpSocket* mainSocket;
     bool isConnected = false;

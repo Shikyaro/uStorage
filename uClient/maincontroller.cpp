@@ -36,6 +36,14 @@ MainController::MainController(QObject *parent) : QObject(parent)
     connect(mainWindow, SIGNAL(onEditS(int,QString,QString,QString,QString,int)), client, SLOT(editItem(int,QString,QString,QString,QString,int)));
     connect(mainWindow, SIGNAL(onDeleteS(int)), client, SLOT(deleteItem(int)));
 
+    connect(mainWindow, SIGNAL(tabChSig(int)), client, SLOT(getItemsFromHall(int)));
+
+    connect(client, SIGNAL(updateCurHall(int,QString,QString,int)), mainWindow, SLOT(updHall(int,QString,QString,int)));
+
+    connect(mainWindow, SIGNAL(modHallSig(int,QString,QString,int)), client, SLOT(editHall(int,QString,QString,int)));
+    connect(mainWindow, SIGNAL(insHallSig(QString,QString,int)), client, SLOT(insertHall(QString,QString,int)));
+    connect(mainWindow, SIGNAL(delHallSig(int)), client, SLOT(delHall(int)));
+
 }
 MainController::~MainController()
 {

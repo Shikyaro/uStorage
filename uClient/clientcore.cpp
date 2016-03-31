@@ -56,7 +56,7 @@ void ClientCore::onReadyRead()
                 //qDebug() << "hall " << hall.at(1);
             }
 
-            getItemsFromHall(mCPointer->getCurrHallId());
+            //getItemsFromHall(mCPointer->getCurrHallId());
 
             break;
         }
@@ -150,13 +150,34 @@ void ClientCore::onReadyRead()
         }
         case ServerClient::succModItem:
         {
-            mCPointer->cItTab();
-            getItemsFromHall(mCPointer->getCurrHallId());
         }
         case ServerClient::succDelItem:
         {
             mCPointer->cItTab();
             getItemsFromHall(mCPointer->getCurrHallId());
+            break;
+        }
+        case ServerClient::succModHall:
+        {
+            QString itm;
+
+            in >> itm;
+
+            QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+            QJsonObject newIt = itmDoc.object();
+
+            emit this->updateCurHall(newIt["hallId"].toInt(),
+                                    newIt["hallName"].toString(),
+                                    newIt["hallAddr"].toString(),
+                                    newIt["hallRoom"].toInt());
+            break;
+        }
+        case ServerClient::succAddHall:
+        {
+        }
+        case ServerClient::succDelHall:
+        {
+            QMessageBox::information(0 ,"Успех", "Для того чтобы увидеть изменения, перезакгрузите программу");
             break;
         }
         default:
@@ -403,4 +424,64 @@ void ClientCore::deleteItem(int id)
     in << groupStr;
 
     this->sendBlock(ServerClient::delItem, &block);
+}
+
+void ClientCore::editHall(int id, QString name, QString addr, int room)
+{
+    QJsonObject gr2del;
+
+    gr2del["hallId"] = id;
+    gr2del["hallName"] = name;
+    gr2del["hallAddr"] = addr;
+    gr2del["hallRoom"] = room;
+
+    QJsonDocument groupDoc(gr2del);
+
+    QString groupStr = groupDoc.toJson(QJsonDocument::Compact);
+
+    QByteArray block;
+    QDataStream in(&block, QIODevice::WriteOnly);
+
+    in << groupStr;
+
+    this->sendBlock(ServerClient::modHall, &block);
+}
+
+void ClientCore::insertHall(QString name, QString addr, int room)
+{
+    QJsonObject gr2del;
+
+    gr2del["hallName"] = name;
+    gr2del["hallAddr"] = addr;
+    gr2del["hallRoom"] = room;
+
+    QJsonDocument groupDoc(gr2del);
+
+    QString groupStr = groupDoc.toJson(QJsonDocument::Compact);
+
+    QByteArray block;
+    QDataStream in(&block, QIODevice::WriteOnly);
+
+    in << groupStr;
+
+    this->sendBlock(ServerClient::addHall, &block);
+
+}
+
+void ClientCore::delHall(int id)
+{
+    QJsonObject gr2del;
+
+    gr2del["hallId"] = id;
+
+    QJsonDocument groupDoc(gr2del);
+
+    QString groupStr = groupDoc.toJson(QJsonDocument::Compact);
+
+    QByteArray block;
+    QDataStream in(&block, QIODevice::WriteOnly);
+
+    in << groupStr;
+
+    this->sendBlock(ServerClient::delHall, &block);
 }

@@ -27,6 +27,14 @@ public slots:
     void delIt(int id);
 
     void clearItms();
+
+    void tabChanged();
+
+    void modHall(int id, QString name, QString addr, int room);
+    void updHall(int id, QString name, QString addr, int room);
+
+    void insHall(QString name, QString addr, int room);
+    void delHall(int id);
 signals:
     void openGroupMenu();
 
@@ -34,12 +42,23 @@ signals:
     void onAddS(int id, QString name, QString inv, QString grp, QString com, int count);
     void onDeleteS(int id);
 
+    void tabChSig(int id);
+
+    void addHallSig(int, QString, QString, int);
+
+    void modHallSig(int id, QString name, QString addr, int room);
+    void insHallSig(QString name, QString addr, int room);
+    void delHallSig(int id);
+
 private:
     QWidget* mainWidget;
     QTabWidget* hallTabs;
+    QPushButton* addHbut = new QPushButton("Добавить");
+    QLineEdit* nameHal = new QLineEdit();
 
 private slots:
     void on_openGroup();
+    //void onAdHal();
 };
 
 #endif // MAINWINDOW_H

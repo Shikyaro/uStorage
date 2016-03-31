@@ -246,3 +246,42 @@ bool Database::deleteItem(int id, int hallId)
         return false;
     }
 }
+
+bool Database::updateHall(int id, QString name, QString address, int room)
+{
+    QSqlQuery query;
+    query.prepare(QString ("UPDATE storageHalls "
+                           "SET hallName = '%1', hallAddress = '%2', hallRoomNum = %3 "
+                           "WHERE hallId = %4").arg(name).arg(address).arg(room).arg(id));
+    if(query.exec()){
+        return true;
+    }else{
+        qDebug() << query.lastError().databaseText();
+        return false;
+    }
+}
+
+bool Database::insertHall(QString name, QString address, int room)
+{
+    QSqlQuery query;
+    query.prepare(QString ("INSERT INTO storageHalls(hallName, hallAddress, hallRoomNum) "
+                           "VALUES ('%1', '%2', %3)").arg(name).arg(address).arg(room));
+    if(query.exec()){
+        return true;
+    }else{
+        qDebug() << query.lastError().databaseText();
+        return false;
+    }
+}
+
+bool Database::delHall(int id)
+{
+    QSqlQuery query;
+    query.prepare(QString ("DELETE FROM storageHalls WHERE hallId = %1").arg(id));
+    if(query.exec()){
+        return true;
+    }else{
+        qDebug() << query.lastError().databaseText();
+        return false;
+    }
+}

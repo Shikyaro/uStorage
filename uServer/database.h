@@ -35,6 +35,10 @@ public slots:
     bool insertItem(QString name, QString inv, int grp, int count, QString comment, int hallId);
     bool updateItem(int id, QString name, QString inv, int grp, int count, QString comment, int hallId);
     bool deleteItem(int id, int hallId);
+
+    bool updateHall(int id, QString name, QString address, int room);
+    bool insertHall(QString name, QString address, int room);
+    bool delHall(int id);
 private:
     QSqlDatabase db;
 };

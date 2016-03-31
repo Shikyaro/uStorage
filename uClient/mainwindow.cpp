@@ -30,7 +30,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     mainMenu->addAction(groupsMenu);
 
+    QMenu *hallMenu = new QMenu("Склады");
+
+    mainMenuBar->addMenu(hallMenu);
+
+    QAction* addHallMenu =new QAction("Добавить склад", hallMenu);
+
+    hallMenu->addAction(addHallMenu);
+
     connect(groupsMenu, SIGNAL(triggered(bool)), this, SLOT(on_openGroup()));
+    connect(hallTabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged()));
+    connect(addHallMenu, SIGNAL(triggered(bool)), this, SLOT(newHall()));
 
 }
 
@@ -47,6 +57,10 @@ void MainWindow::addHall(uint nid, QString nname, QString naddr, int nroomn, QSt
     connect(widg, SIGNAL(onAddS(int,QString,QString,QString,QString,int)), this, SLOT(addIt(int,QString,QString,QString,QString,int)));
     connect(widg, SIGNAL(onEditS(int,QString,QString,QString,QString,int)), this, SLOT(modIt(int,QString,QString,QString,QString,int)));
     connect(widg, SIGNAL(onDeleteS(int)), this, SLOT(delIt(int)));
+
+    connect(widg, SIGNAL(onModHalS(int,QString,QString,int)), this, SLOT(modHall(int,QString,QString,int)));
+    connect(widg, SIGNAL(onAddHalS(QString,QString,int)), this , SLOT(insHall(QString,QString,int)));
+    connect(widg, SIGNAL(onDelHalS(int)), this, SLOT(delHall(int)));
 }
 
 void MainWindow::addItem(int nId, QString nName, QString nInv, QString nGr, QString nCom, int nCou)
@@ -55,7 +69,6 @@ void MainWindow::addItem(int nId, QString nName, QString nInv, QString nGr, QStr
     qDebug() << "additm";
     curTab->addRow(nId, nName, nInv, nGr, nCom, nCou);
     curTab->setDat(true);
-
 }
 
 int MainWindow::getCurrHallId()
@@ -94,4 +107,31 @@ void MainWindow::delIt(int id)
 void MainWindow::clearItms()
 {
     static_cast<HallTabWidget*>(hallTabs->widget(hallTabs->currentIndex()))->clearTable();
+}
+
+void MainWindow::tabChanged()
+{
+    static_cast<HallTabWidget*>(hallTabs->widget(hallTabs->currentIndex()))->clearTable();
+    emit this->tabChSig(static_cast<HallTabWidget*>(hallTabs->widget(hallTabs->currentIndex()))->getHallId());
+    static_cast<HallTabWidget*>(hallTabs->widget(hallTabs->currentIndex()))->reloadFields();
+}
+
+void MainWindow::modHall(int id, QString name, QString addr, int room)
+{
+    emit this->modHallSig(id, name, addr, room);
+}
+
+void MainWindow::updHall(int id, QString name, QString addr, int room)
+{
+    static_cast<HallTabWidget*>(hallTabs->widget(hallTabs->currentIndex()))->updHallData(id, name, addr, room);
+}
+
+void MainWindow::insHall(QString name, QString addr, int room)
+{
+    emit this->insHallSig(name, addr, room);
+}
+
+void MainWindow::delHall(int id)
+{
+    emit this->delHallSig(id);
 }

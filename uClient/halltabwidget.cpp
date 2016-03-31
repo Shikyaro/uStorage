@@ -30,8 +30,11 @@ HallTabWidget::HallTabWidget(uint nHallId,
     //itemTable->insertRow(1);
     //itemTable->insertRow(itemTable->rowCount()+1);
 
+    QVBoxLayout* boxLayout = new QVBoxLayout();
+
     editButtonBox = new QGroupBox("Редактирование");
-    mainLayout->addWidget(editButtonBox,0,1);
+    boxLayout->addWidget(editButtonBox);
+
 
     editButtonLayout = new QVBoxLayout();
     editButtonBox->setLayout(editButtonLayout);
@@ -45,12 +48,42 @@ HallTabWidget::HallTabWidget(uint nHallId,
     editButtonLayout->addWidget(editButton);
     editButtonLayout->addStretch();
 
+    QGroupBox* hallBox = new QGroupBox("Управление складом");
+    boxLayout->addWidget(hallBox);
+
+    QVBoxLayout* halLay = new QVBoxLayout;
+    hallBox->setLayout(halLay);
+    mainLayout->addLayout(boxLayout,0,1);
+
+    hId = new QLineEdit();
+    hName = new QLineEdit();
+    hAddr = new QLineEdit();
+    hRoom = new QLineEdit();
+
+    hId->setReadOnly(true);
+
+    reloadFields();
+
+    adHal = new QPushButton("Добавить склад");
+    modHal = new QPushButton("Изменить склад");
+    delHal = new QPushButton("Удалить склад");
+
+    halLay->addWidget(hId);
+    halLay->addWidget(hName);
+    halLay->addWidget(hAddr);
+    halLay->addWidget(hRoom);
+
+    halLay->addWidget(adHal);
+    halLay->addWidget(modHal);
+    halLay->addWidget(delHal);
+
+
+
     QHBoxLayout* editLay = new QHBoxLayout();
     mainLayout->addLayout(editLay,1,0);
 
     grBox = new QComboBox();
     grBox->setMinimumWidth(130);
-
 
     iId = new QLineEdit();
     iId->setReadOnly(true);
@@ -71,6 +104,10 @@ HallTabWidget::HallTabWidget(uint nHallId,
     connect(editButton, SIGNAL(clicked(bool)), this, SLOT(onEdit()));
     connect(addButton, SIGNAL(clicked(bool)), this, SLOT(onAdd()));
     connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(onDelete()));
+
+    connect(modHal, SIGNAL(clicked(bool)), this, SLOT(onModHal()));
+    connect(adHal, SIGNAL(clicked(bool)), this, SLOT(onAddHal()));
+    connect(delHal, SIGNAL(clicked(bool)), this, SLOT(onDelHal()));
 }
 
 void HallTabWidget::addRow(int nId, QString nName, QString nInv, QString nGr, QString nCom, int nCou)
@@ -152,3 +189,33 @@ void HallTabWidget::onAdd()
 
 }
 
+void HallTabWidget::reloadFields()
+{
+    hId->setText(QString("%1").arg(hallId));
+    hRoom->setText(QString("%1").arg(hallRommNum));
+    hName->setText(hallName);
+    hAddr->setText(hallAddr);
+}
+
+void HallTabWidget::onModHal()
+{
+    emit this->onModHalS(hId->text().toInt(), hName->text(), hAddr->text(), hRoom->text().toInt());
+}
+
+void HallTabWidget::updHallData(int id, QString name, QString adr, int romNum)
+{
+    hallId = id;
+    hallName = name;
+    hallAddr = adr;
+    hallRommNum = romNum;
+}
+
+void HallTabWidget::onAddHal()
+{
+    emit this->onAddHalS(hName->text(), hAddr->text(), hRoom->text().toInt());
+}
+
+void HallTabWidget::onDelHal()
+{
+    emit this->onDelHalS(hId->text().toInt());
+}

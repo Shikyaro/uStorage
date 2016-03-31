@@ -215,6 +215,72 @@ void ServerClient::onReadyRead()
             }
             break;
         }
+        case modHall:
+        {
+            QString itm;
+
+            in >> itm;
+            qDebug() << itm;
+
+            QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+            QJsonObject newIt = itmDoc.object();
+
+            if(!servPtr->updateHall(newIt["hallId"].toInt(),
+                                    newIt["hallName"].toString(),
+                                    newIt["hallAddr"].toString(),
+                                    newIt["hallRoom"].toInt()))
+
+            {
+                //eRRoR
+            }else{
+                QByteArray block;
+                QDataStream out(&block, QIODevice::WriteOnly);
+                out << itm;
+
+                this->sendBlock(succModHall, &block);
+            }
+            break;
+        }
+        case addHall:
+        {
+            QString itm;
+
+            in >> itm;
+            qDebug() << itm;
+
+            QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+            QJsonObject newIt = itmDoc.object();
+
+            if(!servPtr->insertHall(newIt["hallName"].toString(),
+                                    newIt["hallAddr"].toString(),
+                                    newIt["hallRoom"].toInt()))
+
+            {
+                //eRRoR
+            }else{
+                this->sendBlock(succAddHall, NULL);
+            }
+            break;
+        }
+        case delHall:
+        {
+            QString itm;
+
+            in >> itm;
+            qDebug() << itm;
+
+            QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+            QJsonObject newIt = itmDoc.object();
+
+            if(!servPtr->delHall(newIt["hallId"].toInt()))
+
+            {
+                //eRRoR
+            }else{
+                this->sendBlock(succDelHall, NULL);
+            }
+            break;
+        }
         default:
             break;
         }

@@ -82,3 +82,18 @@ bool ServerCore::deleteItem(int id, int hallId)
 {
     return db->deleteItem(id, hallId);
 }
+
+bool ServerCore::updateHall(int id, QString name, QString address, int room)
+{
+    return db->updateHall(id, name, address, room);
+}
+
+bool ServerCore::insertHall(QString name, QString address, int room)
+{
+    return db->insertHall(name, address, room);
+}
+
+bool ServerCore::delHall(int id)
+{
+    return db->delHall(id);
+}
