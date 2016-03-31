@@ -17,6 +17,7 @@ public:
     void showInterface();
     int getCurrHallId(){return mainWindow->getCurrHallId();}
     void cItTab(){mainWindow->clearItms();}
+    QString getCurrHallName(){return mainWindow->getCurrHallName();}
 
 signals:
     void needGroups();

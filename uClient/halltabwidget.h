@@ -12,6 +12,9 @@
 #include <QComboBox>
 #include <groupitem.h>
 #include <QDebug>
+#include <QDialog>
+#include <QInputDialog>
+#include <QMessageBox>
 
 class HallTabWidget : public QWidget
 {
@@ -28,6 +31,7 @@ public:
     QTableWidget* getItemTable(){return itemTable;}
     void addRow(int nId, QString nName, QString nInv, QString nGr, QString nCom, int nCou);
     void clearTable();
+    QString hallName;
 
 signals:
     void onEditS(int id, QString name, QString inv, QString grp, QString com, int count);
@@ -60,7 +64,7 @@ private slots:
 
 private:
     uint hallId;
-    QString hallName;
+
     QString hallAddr;
     int hallRommNum;
     QString hallComment;

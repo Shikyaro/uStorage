@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     mainMenuBar->addMenu(hallMenu);
 
-    QAction* addHallMenu =new QAction("Добавить склад", hallMenu);
+    QAction* addHallMenu =new QAction("Создать отчет", hallMenu);
 
     hallMenu->addAction(addHallMenu);
 
@@ -134,4 +134,14 @@ void MainWindow::insHall(QString name, QString addr, int room)
 void MainWindow::delHall(int id)
 {
     emit this->delHallSig(id);
+}
+
+QString MainWindow::getCurrHallName()
+{
+     return static_cast<HallTabWidget*>(hallTabs->widget(hallTabs->currentIndex()))->hallName;
+}
+
+void MainWindow::newHall()
+{
+    emit this->creReport();
 }

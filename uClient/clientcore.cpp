@@ -7,6 +7,7 @@ ClientCore::ClientCore(QObject *parent) : QObject(parent)
     mCPointer = static_cast<MainController*>(parent);
 
     connect(mainSocket,SIGNAL(readyRead()),this,SLOT(onReadyRead()));
+
 }
 
 void ClientCore::onReadyRead()
@@ -484,4 +485,26 @@ void ClientCore::delHall(int id)
     in << groupStr;
 
     this->sendBlock(ServerClient::delHall, &block);
+}
+
+void ClientCore::createReport()
+{
+    QXlsx::Document xlsx;
+    xlsx.write("A1","Склад");
+    xlsx.write("B1",QString("%1").arg(mCPointer->getCurrHallName()));
+    xlsx.write("A2", "Название");
+    xlsx.write("B2", "Инв. номер");
+    xlsx.write("C2", "Категория");
+    xlsx.write("D2", "Комментарий");
+    xlsx.write("E2", "Количество");
+
+    for(int i = 0; i < itemsInCurrHall.size(); i++){
+        xlsx.write(QString("A%1").arg(i+3), itemsInCurrHall.at(i)->getName());
+        xlsx.write(QString("B%1").arg(i+3), itemsInCurrHall.at(i)->getInvNumber());
+        xlsx.write(QString("C%1").arg(i+3), itemsInCurrHall.at(i)->getGroupName());
+        xlsx.write(QString("D%1").arg(i+3), itemsInCurrHall.at(i)->getComment());
+        xlsx.write(QString("E%1").arg(i+3), itemsInCurrHall.at(i)->itemCount);
+    }
+
+    xlsx.saveAs(mCPointer->getCurrHallName()+".xlsx");
 }

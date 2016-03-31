@@ -26,6 +26,7 @@ public:
     int getHallId(){return itemHallId;}
     QString getGroupName(){return groupName;}
     int getItemCount(){return itemCount;}
+    int itemCount;
 
     //static QJsonObject serializeToJson(storedItem* item);
     //static storedItem deserializeFromJson(QJsonObject* object);
@@ -51,7 +52,7 @@ private:
     int itemGroupId;
     QString itemComment;
     int itemHallId;
-    int itemCount;
+
     QString groupName;
 
 };

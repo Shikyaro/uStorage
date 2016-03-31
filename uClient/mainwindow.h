@@ -17,6 +17,7 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
     int getCurrHallId();
+    QString getCurrHallName();
 public slots:
     void addHall(uint nid, QString nname, QString naddr, int nroomn, QString ncomm);
     void addItem(int nId, QString nName, QString nInv, QString nGr, QString nCom, int nCou);
@@ -35,6 +36,8 @@ public slots:
 
     void insHall(QString name, QString addr, int room);
     void delHall(int id);
+
+    void newHall();
 signals:
     void openGroupMenu();
 
@@ -49,6 +52,8 @@ signals:
     void modHallSig(int id, QString name, QString addr, int room);
     void insHallSig(QString name, QString addr, int room);
     void delHallSig(int id);
+
+    void creReport();
 
 private:
     QWidget* mainWidget;

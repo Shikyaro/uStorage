@@ -12,6 +12,7 @@
 #include <storeditem.h>
 #include <maincontroller.h>
 #include "../uServer/serverclient.h"
+#include "xlsxdocument.h"
 
 class MainController;
 
@@ -65,6 +66,8 @@ public slots:
     void editHall(int id, QString name, QString addr, int room);
     void insertHall(QString name, QString addr, int room);
     void delHall(int id);
+
+    void createReport();
 private:
     QTcpSocket* mainSocket;
     bool isConnected = false;

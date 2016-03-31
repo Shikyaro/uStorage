@@ -174,8 +174,17 @@ void HallTabWidget::onEdit()
 
 void HallTabWidget::onDelete()
 {
-    emit this->onDeleteS(iId->text().toInt());
+    bool ok;
+    QMessageBox mb;
+    mb.setText("Внимание");
+    mb.setInformativeText("Вы хотите удалить это?");
+    mb.setStandardButtons(QMessageBox::Cancel | QMessageBox::Ok);
 
+    int ret = mb.exec();
+
+    if(ret == QMessageBox::Ok){
+        emit this->onDeleteS(iId->text().toInt());
+    }
 }
 
 void HallTabWidget::onAdd()

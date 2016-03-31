@@ -44,6 +44,8 @@ MainController::MainController(QObject *parent) : QObject(parent)
     connect(mainWindow, SIGNAL(insHallSig(QString,QString,int)), client, SLOT(insertHall(QString,QString,int)));
     connect(mainWindow, SIGNAL(delHallSig(int)), client, SLOT(delHall(int)));
 
+    connect(mainWindow, SIGNAL(creReport()), client, SLOT(createReport()));
+
 }
 MainController::~MainController()
 {
