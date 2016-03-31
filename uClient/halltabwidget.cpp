@@ -66,6 +66,11 @@ HallTabWidget::HallTabWidget(uint nHallId,
     editLay->addWidget(grBox);
     editLay->addWidget(iCom);
     editLay->addWidget(iCou);
+
+    connect(itemTable, SIGNAL(currentCellChanged(int,int,int,int)), this, SLOT(onSelect()));
+    connect(editButton, SIGNAL(clicked(bool)), this, SLOT(onEdit()));
+    connect(addButton, SIGNAL(clicked(bool)), this, SLOT(onAdd()));
+    connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(onDelete()));
 }
 
 void HallTabWidget::addRow(int nId, QString nName, QString nInv, QString nGr, QString nCom, int nCou)
@@ -78,6 +83,7 @@ void HallTabWidget::addRow(int nId, QString nName, QString nInv, QString nGr, QS
     itemTable->setItem(itemTable->rowCount()-1,3,new QTableWidgetItem(tr("%1").arg(nGr)));
     itemTable->setItem(itemTable->rowCount()-1,4,new QTableWidgetItem(tr("%1").arg(nCom)));
     itemTable->setItem(itemTable->rowCount()-1,5,new QTableWidgetItem(tr("%1").arg(nCou)));
+    isDat = true;
 }
 
 void HallTabWidget::loadToBox(QList<groupItem *> *list)
@@ -87,5 +93,62 @@ void HallTabWidget::loadToBox(QList<groupItem *> *list)
     for (int i = 0; i < list->size(); i++){
         grBox->addItem(list->at(i)->name);
     }
+}
+
+void HallTabWidget::onSelect()
+{
+    if(isDat){
+        int cRow = itemTable->currentRow();
+        iId->setText(itemTable->item(cRow, 0)->text());
+        iName->setText(itemTable->item(cRow, 1)->text());
+        iInv->setText(itemTable->item(cRow, 2)->text());
+        iCom->setText(itemTable->item(cRow, 4)->text());
+        iCou->setText(itemTable->item(cRow, 5)->text());
+        //iInv->setText(itemTable->item(cRow, 5));
+        grBox->setCurrentText(itemTable->item(cRow,3)->text());
+    }
+}
+
+void HallTabWidget::clearTable()
+{
+    isDat = false;
+    itemTable->setRowCount(0);
+}
+
+void HallTabWidget::onChanClicked()
+{
+    clearTable();
+}
+
+void HallTabWidget::setDat(bool dat)
+{
+    isDat = dat;
+}
+
+void HallTabWidget::onEdit()
+{
+    emit this->onEditS(iId->text().toInt(),
+                       iName->text(),
+                       iInv->text(),
+                       grBox->currentText(),
+                       iCom->text(),
+                       iCou->text().toInt());
+}
+
+void HallTabWidget::onDelete()
+{
+    emit this->onDeleteS(iId->text().toInt());
+
+}
+
+void HallTabWidget::onAdd()
+{
+    emit this->onAddS(iId->text().toInt(),
+                       iName->text(),
+                       iInv->text(),
+                       grBox->currentText(),
+                       iCom->text(),
+                       iCou->text().toInt());
+
 }
 

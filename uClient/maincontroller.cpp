@@ -32,6 +32,10 @@ MainController::MainController(QObject *parent) : QObject(parent)
 
     connect(client, SIGNAL(groupsToBox(QList<groupItem*>*)), mainWindow, SLOT(load2box(QList<groupItem*>*)));
 
+    connect(mainWindow, SIGNAL(onAddS(int,QString,QString,QString,QString,int)), client, SLOT(insertItem(int,QString,QString,QString,QString,int)));
+    connect(mainWindow, SIGNAL(onEditS(int,QString,QString,QString,QString,int)), client, SLOT(editItem(int,QString,QString,QString,QString,int)));
+    connect(mainWindow, SIGNAL(onDeleteS(int)), client, SLOT(deleteItem(int)));
+
 }
 MainController::~MainController()
 {

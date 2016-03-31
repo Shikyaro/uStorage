@@ -191,3 +191,58 @@ bool Database::deleteGroup(int id)
         return false;
     }
 }
+
+bool Database::insertItem(QString name, QString inv, int grp, int count, QString comment, int hallId)
+{
+    //qDebug() << "iniT";
+    QSqlQuery query;
+
+    QString z1 = QString("INSERT INTO items(items.itemName, items.itemInventoryNum, items.itemGroup, items.itemComment) "
+                         "VALUES('%1', '%2', %3, '%4');").arg(name, inv).arg(grp).arg(comment);
+    QString z2 = QString("INSERT INTO itemshalls(itemshalls.itemId, itemshalls.hallId, itemshalls.itemCount) "
+                         "VALUES ((SELECT items.itemId FROM items WHERE items.itemInventoryNum = '%1'), %2, %3 );").arg(inv).arg(hallId).arg(count);
+
+    query.prepare(z1+z2);
+    if(query.exec()){
+        return true;
+    }else{
+        qDebug() << query.lastError().databaseText();
+        return false;
+    }
+}
+
+bool Database::updateItem(int id, QString name, QString inv, int grp, int count, QString comment, int hallId)
+{
+    QSqlQuery query;
+
+    QString z1 = QString("UPDATE items "
+                         "SET itemName = '%1', itemInventoryNum = '%2', itemGroup = %3, itemComment = '%4' "
+                         "WHERE itemId = %5;").arg(name).arg(inv).arg(grp).arg(comment).arg(id);
+    QString z2 = QString("UPDATE itemsHalls "
+                         "SET itemCount = %2 "
+                         "WHERE hallId = %1 AND itemId = %3;").arg(hallId).arg(count).arg(id);
+
+    query.prepare(z1+z2);
+    if(query.exec()){
+        return true;
+    }else{
+        qDebug() << query.lastError().databaseText();
+        return false;
+    }
+
+}
+
+bool Database::deleteItem(int id, int hallId)
+{
+    QSqlQuery query;
+    query.prepare(QString("DELETE FROM itemsHalls "
+                          "WHERE itemId = %1 AND hallId = %2; "
+                          "DELETE FROM items"
+                          "WHERE itemId = %1;").arg(id).arg(hallId));
+    if(query.exec()){
+        return true;
+    }else{
+        qDebug() << query.lastError().databaseText();
+        return false;
+    }
+}

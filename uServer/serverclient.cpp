@@ -150,6 +150,71 @@ void ServerClient::onReadyRead()
             break;
 
         }
+        case addItem:
+        {
+            //qDebug() << "addItem";
+            QString itm;
+
+            in >> itm;
+            qDebug() << itm;
+
+            QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+            QJsonObject newIt = itmDoc.object();
+
+            if(!servPtr->insertItem(newIt["itemName"].toString(),
+                                    newIt["itemInventoryNum"].toString(),
+                                    newIt["itemGroup"].toInt(),
+                                    newIt["itemCount"].toInt(),
+                                    newIt["itemComment"].toString(),
+                                    newIt["itemHallId"].toInt()))
+            {
+                //eRRoR
+            }else{
+                this->sendBlock(succAddItem, NULL);
+            }
+            break;
+        }
+        case modItem:
+        {
+            QString itm;
+
+            in >> itm;
+            qDebug() << itm;
+
+            QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+            QJsonObject newIt = itmDoc.object();
+
+            if(!servPtr->updateItem(newIt["itemId"].toInt(),
+                                    newIt["itemName"].toString(),
+                                    newIt["itemInventoryNum"].toString(),
+                                    newIt["itemGroup"].toInt(),
+                                    newIt["itemCount"].toInt(),
+                                    newIt["itemComment"].toString(),
+                                    newIt["itemHallId"].toInt()))
+            {
+                //eRRoR
+            }else{
+                this->sendBlock(succAddItem, NULL);
+            }
+            break;
+        }
+        case delItem:
+        {
+            QString itemGroup;
+
+            in >> itemGroup;
+
+            QJsonDocument itemGroupDoc = QJsonDocument::fromJson(itemGroup.toUtf8());
+            QJsonObject newGr = itemGroupDoc.object();
+
+            if(!servPtr->deleteItem(newGr["itemId"].toInt(), newGr["hallId"].toInt()))
+            {
+                //eRRoR
+            }else{
+                this->sendBlock(succDelItem, NULL);
+            }
+            break;
+        }
         default:
             break;
         }

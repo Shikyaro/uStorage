@@ -31,6 +31,9 @@ public slots:
     bool updateGroups(int id, QString name, QString comment);
     bool insertGroup(QString name, QString comment);
     bool deleteGroup(int id);
+    bool insertItem(QString name, QString inv, int grp, int count, QString comment, int hallId);
+    bool updateItem(int id, QString name, QString inv, int grp, int count, QString comment, int hallId);
+    bool deleteItem(int id, int hallId);
 private:
     QList<ServerClient* > clientList;
     Database* db;

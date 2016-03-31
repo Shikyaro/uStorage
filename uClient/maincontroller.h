@@ -16,6 +16,7 @@ public:
     ~MainController();
     void showInterface();
     int getCurrHallId(){return mainWindow->getCurrHallId();}
+    void cItTab(){mainWindow->clearItms();}
 
 signals:
     void needGroups();

@@ -53,7 +53,7 @@ void ClientCore::onReadyRead()
                 QString hid = hall.at(0);
 
                 emit this->addHall(hid.toUInt(), hall.at(1), hall.at(2), rnum.toInt(), hall.at(4));
-                qDebug() << "hall " << hall.at(1);
+                //qDebug() << "hall " << hall.at(1);
             }
 
             getItemsFromHall(mCPointer->getCurrHallId());
@@ -65,7 +65,7 @@ void ClientCore::onReadyRead()
             QString itms;
             in >> itms;
 
-            qDebug() << itms;
+            //qDebug() << itms;
 
             QJsonDocument itemsDoc = QJsonDocument::fromJson(itms.toUtf8());
 
@@ -145,6 +145,20 @@ void ClientCore::onReadyRead()
             ifNeedForGroups();
             break;
         }
+        case ServerClient::succAddItem:
+        {
+        }
+        case ServerClient::succModItem:
+        {
+            mCPointer->cItTab();
+            getItemsFromHall(mCPointer->getCurrHallId());
+        }
+        case ServerClient::succDelItem:
+        {
+            mCPointer->cItTab();
+            getItemsFromHall(mCPointer->getCurrHallId());
+            break;
+        }
         default:
             break;
         }
@@ -163,6 +177,7 @@ bool ClientCore::connectToServer(QString ip, quint16 port)
 
 void ClientCore::getItemsFromHall(int id)
 {
+    itemsInCurrHall.clear();
     QByteArray blck;
     QDataStream blOut(&blck, QIODevice::WriteOnly);
 
@@ -305,4 +320,87 @@ void ClientCore::deleteGroup(int id)
     in << groupStr;
 
     this->sendBlock(ServerClient::delGroup, &block);
+}
+
+void ClientCore::insertItem(int id, QString name, QString inv, QString grp, QString com, int count)
+{
+    int grNum = 0;
+    for (int i = 0; i < groupsOfItem.size(); i++){
+        if(groupsOfItem.at(i)->name == grp){
+            grNum = groupsOfItem.at(i)->id;
+            break;
+        }
+    }
+    qDebug() << "insert item" << grNum;
+    QJsonObject it2add;
+
+
+    it2add["itemName"] = name;
+    it2add["itemInventoryNum"] = inv;
+    it2add["itemGroup"] = grNum;
+    it2add["itemCount"] = count;
+    it2add["itemComment"] = com;
+    it2add["itemHallId"] = mCPointer->getCurrHallId();
+
+    QJsonDocument itDoc(it2add);
+
+    QString itStr = itDoc.toJson(QJsonDocument::Compact);
+
+    QByteArray block;
+    QDataStream in(&block, QIODevice::WriteOnly);
+
+    in << itStr;
+
+    this->sendBlock(ServerClient::addItem, &block);
+}
+
+void ClientCore::editItem(int id, QString name, QString inv, QString grp, QString com, int count)
+{
+    int grNum = 0;
+    for (int i = 0; i < groupsOfItem.size(); i++){
+        if(groupsOfItem.at(i)->name == grp){
+            grNum = groupsOfItem.at(i)->id;
+            break;
+        }
+    }
+    qDebug() << "edit item" << grNum;
+    QJsonObject it2add;
+
+    it2add["itemId"] = id;
+    it2add["itemName"] = name;
+    it2add["itemInventoryNum"] = inv;
+    it2add["itemGroup"] = grNum;
+    it2add["itemCount"] = count;
+    it2add["itemComment"] = com;
+    it2add["itemHallId"] = mCPointer->getCurrHallId();
+
+    QJsonDocument itDoc(it2add);
+
+    QString itStr = itDoc.toJson(QJsonDocument::Compact);
+
+    QByteArray block;
+    QDataStream in(&block, QIODevice::WriteOnly);
+
+    in << itStr;
+
+    this->sendBlock(ServerClient::modItem, &block);
+}
+
+void ClientCore::deleteItem(int id)
+{
+    QJsonObject gr2del;
+
+    gr2del["itemId"] = id;
+    gr2del["hallId"] = mCPointer->getCurrHallId();
+
+    QJsonDocument groupDoc(gr2del);
+
+    QString groupStr = groupDoc.toJson(QJsonDocument::Compact);
+
+    QByteArray block;
+    QDataStream in(&block, QIODevice::WriteOnly);
+
+    in << groupStr;
+
+    this->sendBlock(ServerClient::delItem, &block);
 }

@@ -56,6 +56,10 @@ public slots:
     void deleteGroup(int id);
     //void groupsToBox();
 
+    void insertItem(int id, QString name, QString inv, QString grp, QString com, int count);
+    void editItem(int id, QString name, QString inv, QString grp, QString com, int count);
+    void deleteItem(int id);
+
 private:
     QTcpSocket* mainSocket;
     bool isConnected = false;

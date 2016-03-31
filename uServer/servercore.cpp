@@ -67,3 +67,18 @@ bool ServerCore::deleteGroup(int id)
 {
     return db->deleteGroup(id);
 }
+
+bool ServerCore::insertItem(QString name, QString inv, int grp, int count, QString comment, int hallId)
+{
+    return db->insertItem(name, inv, grp, count, comment, hallId);
+}
+
+bool ServerCore::updateItem(int id, QString name, QString inv, int grp, int count, QString comment, int hallId)
+{
+    return db->updateItem(id, name, inv, grp, count, comment, hallId);
+}
+
+bool ServerCore::deleteItem(int id, int hallId)
+{
+    return db->deleteItem(id, hallId);
+}

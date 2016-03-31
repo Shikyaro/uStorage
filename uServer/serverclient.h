@@ -33,6 +33,12 @@ public:
     static const quint8 succAddGroup = 14;
     static const quint8 delGroup = 15;
     static const quint8 succDelGroup = 16;
+    static const quint8 addItem = 17;
+    static const quint8 succAddItem = 18;
+    static const quint8 modItem = 19;
+    static const quint8 succModItem = 20;
+    static const quint8 delItem = 21;
+    static const quint8 succDelItem = 22;
 
 signals:
 
