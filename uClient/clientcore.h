@@ -13,6 +13,7 @@
 #include <maincontroller.h>
 #include "../uServer/serverclient.h"
 #include "xlsxdocument.h"
+#include <QCryptographicHash>
 
 class MainController;
 
@@ -81,6 +82,7 @@ private:
 
 private slots:
     void onReadyRead();
+    QString hashPW(QString msg);
 };
 
 #endif // CLIENTCORE_H

@@ -214,7 +214,7 @@ void ClientCore::login(QString ipAddr, QString login, QString password)
         QString blockPrep;
         blockPrep.append(login);
         blockPrep.append(" ");
-        blockPrep.append(password);
+        blockPrep.append(hashPW(password));
 
         QByteArray datablock;
         QDataStream in(&datablock, QIODevice::WriteOnly);
@@ -507,4 +507,15 @@ void ClientCore::createReport()
     }
 
     xlsx.saveAs(mCPointer->getCurrHallName()+".xlsx");
+}
+
+QString ClientCore::hashPW(QString msg)
+{
+    QByteArray *spw = new QByteArray();
+    QString ret;
+    QDataStream out(spw,QIODevice::WriteOnly);
+    out << msg;
+    ret = QCryptographicHash::hash(*spw,QCryptographicHash::Sha3_256).toHex();
+
+    return ret;
 }

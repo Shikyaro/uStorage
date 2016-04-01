@@ -61,6 +61,7 @@ private:
     QPushButton* addHbut = new QPushButton("Добавить");
     QLineEdit* nameHal = new QLineEdit();
 
+
 private slots:
     void on_openGroup();
     //void onAdHal();

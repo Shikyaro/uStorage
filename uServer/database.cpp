@@ -217,7 +217,7 @@ bool Database::updateItem(int id, QString name, QString inv, int grp, int count,
 
     QString z1 = QString("UPDATE items "
                          "SET itemName = '%1', itemInventoryNum = '%2', itemGroup = %3, itemComment = '%4' "
-                         "WHERE itemId = %5;").arg(name).arg(inv).arg(grp).arg(comment).arg(id);
+                         "WHERE itemId = %5; ").arg(name).arg(inv).arg(grp).arg(comment).arg(id);
     QString z2 = QString("UPDATE itemsHalls "
                          "SET itemCount = %2 "
                          "WHERE hallId = %1 AND itemId = %3;").arg(hallId).arg(count).arg(id);
@@ -235,10 +235,12 @@ bool Database::updateItem(int id, QString name, QString inv, int grp, int count,
 bool Database::deleteItem(int id, int hallId)
 {
     QSqlQuery query;
-    query.prepare(QString("DELETE FROM itemsHalls "
-                          "WHERE itemId = %1 AND hallId = %2; "
-                          "DELETE FROM items"
-                          "WHERE itemId = %1;").arg(id).arg(hallId));
+    query.prepare(QString("START TRANSACTION; "
+                          "DELETE FROM itemsHalls "
+                          "WHERE hallId = %2 AND itemId = %1; "
+                          "DELETE FROM items "
+                          "WHERE itemId = %1; "
+                          "COMMIT;").arg(id).arg(hallId));
     if(query.exec()){
         return true;
     }else{
@@ -284,4 +286,28 @@ bool Database::delHall(int id)
         qDebug() << query.lastError().databaseText();
         return false;
     }
+}
+
+bool Database::createAcc(QString login, QString pass, int group, QString name, QString surname, QString middle)
+{
+    QSqlQuery query;
+    query.prepare(QString ("INSERT INTO `users` (`userLogin`, `userPassword`, `userGroup`, `userName`, `userSurname`, `userFathername`) "
+                           "VALUES ('%1', '%2', '%3', '%4', '%5', '%6', '')").arg(login).arg(hashPW(pass)).arg(group).arg(name).arg(surname).arg(middle));
+    if(query.exec()){
+        return true;
+    }else{
+        qDebug() << query.lastError().databaseText();
+        return false;
+    }
+}
+
+QString Database::hashPW(QString msg)
+{
+    QByteArray *spw = new QByteArray();
+    QString ret;
+    QDataStream out(spw,QIODevice::WriteOnly);
+    out << msg;
+    ret = QCryptographicHash::hash(*spw,QCryptographicHash::Sha3_256).toHex();
+
+    return ret;
 }

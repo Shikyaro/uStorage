@@ -48,10 +48,22 @@ HallTabWidget::HallTabWidget(uint nHallId,
     editButtonLayout->addWidget(editButton);
     editButtonLayout->addStretch();
 
+    columns = new QComboBox();
+    columns->addItem("Номер");
+    columns->addItem("Название");
+    columns->addItem("Инвентарный");
+    columns->addItem("Категория");
+    columns->addItem("Комментарий");
+    columns->addItem("Количество");
+
+    sortBc = new QPushButton("Сортировать");
+    editButtonLayout->addWidget(columns);
+    editButtonLayout->addWidget(sortBc);
+
     QGroupBox* hallBox = new QGroupBox("Управление складом");
     boxLayout->addWidget(hallBox);
 
-    QVBoxLayout* halLay = new QVBoxLayout;
+    QGridLayout* halLay = new QGridLayout();
     hallBox->setLayout(halLay);
     mainLayout->addLayout(boxLayout,0,1);
 
@@ -68,14 +80,20 @@ HallTabWidget::HallTabWidget(uint nHallId,
     modHal = new QPushButton("Изменить склад");
     delHal = new QPushButton("Удалить склад");
 
-    halLay->addWidget(hId);
-    halLay->addWidget(hName);
-    halLay->addWidget(hAddr);
-    halLay->addWidget(hRoom);
+    halLay->addWidget(new QLabel("Id:"),0,0);
+    halLay->addWidget(new QLabel("Название:"),1,0);
+    halLay->addWidget(new QLabel("Адрес:"),2,0);
+    halLay->addWidget(new QLabel("Комната:"),3,0);
 
-    halLay->addWidget(adHal);
-    halLay->addWidget(modHal);
-    halLay->addWidget(delHal);
+
+    halLay->addWidget(hId,0,1);
+    halLay->addWidget(hName,1,1);
+    halLay->addWidget(hAddr,2,1);
+    halLay->addWidget(hRoom,3,1);
+
+    halLay->addWidget(adHal,4,1);
+    halLay->addWidget(modHal,5,1);
+    halLay->addWidget(delHal,6,1);
 
 
 
@@ -108,6 +126,8 @@ HallTabWidget::HallTabWidget(uint nHallId,
     connect(modHal, SIGNAL(clicked(bool)), this, SLOT(onModHal()));
     connect(adHal, SIGNAL(clicked(bool)), this, SLOT(onAddHal()));
     connect(delHal, SIGNAL(clicked(bool)), this, SLOT(onDelHal()));
+
+    connect(sortBc, SIGNAL(clicked(bool)), this , SLOT(sortCol(bool)));
 }
 
 void HallTabWidget::addRow(int nId, QString nName, QString nInv, QString nGr, QString nCom, int nCou)
@@ -227,4 +247,11 @@ void HallTabWidget::onAddHal()
 void HallTabWidget::onDelHal()
 {
     emit this->onDelHalS(hId->text().toInt());
+}
+
+void HallTabWidget::sortCol(bool srt)
+{
+    itemTable->setSortingEnabled(true);
+    itemTable->sortByColumn(columns->currentIndex(), Qt::SortOrder::AscendingOrder);
+    itemTable->setSortingEnabled(false);
 }

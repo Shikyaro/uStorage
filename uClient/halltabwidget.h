@@ -15,7 +15,7 @@
 #include <QDialog>
 #include <QInputDialog>
 #include <QMessageBox>
-
+#include <QAction>
 class HallTabWidget : public QWidget
 {
     Q_OBJECT
@@ -58,6 +58,8 @@ public slots:
     void onDelHal();
 
     void updHallData(int id, QString name, QString adr, int romNum);
+
+    void sortCol(bool srt);
 private slots:
     void onSelect();
 
@@ -84,6 +86,8 @@ private:
 
     QLineEdit* hId, *hName, *hAddr, *hRoom;
     QPushButton* adHal, *modHal, *delHal;
+    QComboBox* columns;
+    QPushButton* sortBc;
 
     bool isDat = false;
 };

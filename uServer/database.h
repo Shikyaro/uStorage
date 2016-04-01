@@ -11,6 +11,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QDebug>
+#include <QCryptographicHash>
 
 class Database : public QObject
 {
@@ -39,8 +40,11 @@ public slots:
     bool updateHall(int id, QString name, QString address, int room);
     bool insertHall(QString name, QString address, int room);
     bool delHall(int id);
+
+    bool createAcc(QString login, QString pass, int group, QString name, QString surname, QString middle);
 private:
     QSqlDatabase db;
+    QString hashPW(QString msg);
 };
 
 #endif // DATABASE_H
