@@ -5,6 +5,8 @@ UserWidget::UserWidget(QWidget *parent) : QWidget(parent)
     QGridLayout* mainlay = new QGridLayout();
     this->setLayout(mainlay);
 
+    this->setFixedWidth(855);
+
     userTable = new QTableWidget();
     userTable->setColumnCount(7);
     userTable->setHorizontalHeaderLabels({"Id", "Логин", "Пароль", "Группа", "Имя", "Фамилия", "Отчество"});
