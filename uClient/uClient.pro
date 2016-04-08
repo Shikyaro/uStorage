@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     loginwidget.cpp \
     storeditem.cpp \
     itemgroup.cpp \
-    groupwidget.cpp
+    groupwidget.cpp \
+    userwidget.cpp
 
 HEADERS  += mainwindow.h \
     maincontroller.h \
@@ -33,4 +34,5 @@ HEADERS  += mainwindow.h \
     storeditem.h \
     itemgroup.h \
     groupwidget.h \
-    groupitem.h
+    groupitem.h \
+    userwidget.h

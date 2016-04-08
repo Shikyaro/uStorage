@@ -21,26 +21,27 @@ MainWindow::MainWindow(QWidget *parent)
     QMenuBar *mainMenuBar = new QMenuBar();
 
     QMenu *mainMenu = new QMenu("Главное");
-
     mainMenuBar->addMenu(mainMenu);
-
     mainLayout->setMenuBar(mainMenuBar);
-
     QAction *groupsMenu = new QAction("Работа с группами", mainMenu);
-
     mainMenu->addAction(groupsMenu);
 
     QMenu *hallMenu = new QMenu("Склады");
-
     mainMenuBar->addMenu(hallMenu);
-
     QAction* addHallMenu =new QAction("Создать отчет", hallMenu);
-
     hallMenu->addAction(addHallMenu);
+
+    QMenu *adminMenu = new QMenu("Администрирование");
+    mainMenuBar->addMenu(adminMenu);
+    QAction* usersMenu = new QAction("Работа с пользователями", adminMenu);
+    adminMenu->addAction(usersMenu);
+
+
 
     connect(groupsMenu, SIGNAL(triggered(bool)), this, SLOT(on_openGroup()));
     connect(hallTabs, SIGNAL(currentChanged(int)), this, SLOT(tabChanged()));
     connect(addHallMenu, SIGNAL(triggered(bool)), this, SLOT(newHall()));
+    connect(usersMenu, SIGNAL(triggered(bool)), this, SLOT(onOpenUsr()));
 
 }
 
@@ -144,4 +145,9 @@ QString MainWindow::getCurrHallName()
 void MainWindow::newHall()
 {
     emit this->creReport();
+}
+
+void MainWindow::onOpenUsr()
+{
+    emit this->openUsrMenu();
 }

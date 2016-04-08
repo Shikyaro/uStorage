@@ -24,4 +24,5 @@ HEADERS  += mainwindow.h \
     maincontroller.h \
     servercore.h \
     serverclient.h \
-    database.h
+    database.h \
+    permissions.h

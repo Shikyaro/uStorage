@@ -181,6 +181,56 @@ void ClientCore::onReadyRead()
             QMessageBox::information(0 ,"Успех", "Для того чтобы увидеть изменения, перезакгрузите программу");
             break;
         }
+        case ServerClient::getUsr:
+        {
+            QString itm;
+
+            in >> itm;
+            qDebug() << itm;
+
+            QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+            QJsonObject newIt = itmDoc.object();
+
+            QJsonArray itemsFromObj = newIt["usersArray"].toArray();
+
+            for (int i = 0; i < itemsFromObj.size(); i++){
+                QJsonObject newItem = itemsFromObj.at(i).toObject();
+            emit this->adUsr(newItem["userId"].toInt(),
+                             newItem["userLogin"].toString(),
+                             newItem["userPassword"].toString(),
+                             newItem["userGroup"].toInt(),
+                             newItem["userName"].toString(),
+                             newItem["userSurname"].toString(),
+                             newItem["userFathername"].toString());
+            }
+            qDebug() << "sig";
+            break;
+        }
+        case ServerClient::succAddUsr:
+        {
+
+        }
+        case ServerClient::succModUsr:
+        {
+
+        }
+        case ServerClient::succDelUsr:
+        {
+            mCPointer->clusrs();
+            ifNeedForUsers();
+            break;
+        }
+        case ServerClient::permRestrict:
+        {
+            mCPointer->closAll();
+            QMessageBox::warning(0,"Нет доступа","У вас недостаточно прав для выполнения этой команды");
+            break;
+        }
+        case ServerClient::err:
+        {
+            QMessageBox::warning(0,"Ошибка","Невозможно выполнить данное действие");
+            break;
+        }
         default:
             break;
         }
@@ -518,4 +568,80 @@ QString ClientCore::hashPW(QString msg)
     ret = QCryptographicHash::hash(*spw,QCryptographicHash::Sha3_256).toHex();
 
     return ret;
+}
+
+void ClientCore::ifNeedForUsers()
+{
+    qDebug() << "_________________==========NFU  NFU================__________________";
+    this->sendBlock(ServerClient::getUsr, NULL);
+}
+
+void ClientCore::creAcc(QString log, QString pass, int grId, QString nam, QString sur, QString mid)
+{
+    QJsonObject gr2del;
+
+    gr2del["userLogin"] = log;
+    gr2del["userPassword"] = hashPW(pass);
+    gr2del["userGroup"] = grId;
+    gr2del["userName"] = nam;
+    gr2del["userSurname"] = sur;
+    gr2del["userFathername"] = mid;
+
+    QJsonDocument groupDoc(gr2del);
+
+    QString groupStr = groupDoc.toJson(QJsonDocument::Compact);
+
+    QByteArray block;
+    QDataStream in(&block, QIODevice::WriteOnly);
+
+    in << groupStr;
+
+    this->sendBlock(ServerClient::addUsr, &block);
+}
+
+void ClientCore::modAcc(int id, QString log, QString pass, int grId, QString nam, QString sur, QString mid)
+{
+    QJsonObject gr2del;
+    qDebug() << pass;
+
+    gr2del["userId"] = id;
+    gr2del["userLogin"] = log;
+    if(pass!=""){
+        gr2del["userPassword"] = hashPW(pass);
+    } else {
+        gr2del["userPassword"] = "";
+    }
+    gr2del["userGroup"] = grId;
+    gr2del["userName"] = nam;
+    gr2del["userSurname"] = sur;
+    gr2del["userFathername"] = mid;
+
+    QJsonDocument groupDoc(gr2del);
+
+    QString groupStr = groupDoc.toJson(QJsonDocument::Compact);
+
+    QByteArray block;
+    QDataStream in(&block, QIODevice::WriteOnly);
+
+    in << groupStr;
+
+    this->sendBlock(ServerClient::modUsr, &block);
+}
+
+void ClientCore::delAcc(int id)
+{
+    QJsonObject gr2del;
+
+    gr2del["userId"] = id;
+
+    QJsonDocument groupDoc(gr2del);
+
+    QString groupStr = groupDoc.toJson(QJsonDocument::Compact);
+
+    QByteArray block;
+    QDataStream in(&block, QIODevice::WriteOnly);
+
+    in << groupStr;
+
+    this->sendBlock(ServerClient::delUsr, &block);
 }

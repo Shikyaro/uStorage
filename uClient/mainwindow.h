@@ -55,6 +55,8 @@ signals:
 
     void creReport();
 
+    void openUsrMenu();
+
 private:
     QWidget* mainWidget;
     QTabWidget* hallTabs;
@@ -64,6 +66,7 @@ private:
 
 private slots:
     void on_openGroup();
+    void onOpenUsr();
     //void onAdHal();
 };
 

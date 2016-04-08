@@ -97,3 +97,33 @@ bool ServerCore::delHall(int id)
 {
     return db->delHall(id);
 }
+
+bool ServerCore::createAcc(QString login, QString pass, int group, QString name, QString surname, QString middle)
+{
+    return db->createAcc(login, pass, group, name, surname, middle);
+}
+
+bool ServerCore::modUser(int id, QString login, QString pass, int group, QString name, QString surname, QString middle)
+{
+    return db->modUser(id, login, pass, group, name, surname, middle);
+}
+
+bool ServerCore::delUser(int id)
+{
+    return db->delUser(id);
+}
+
+QString ServerCore::getUsers()
+{
+    return db->getUsers();
+}
+
+int ServerCore::getId(QString login)
+{
+    return db->getId(login);
+}
+
+perms ServerCore::getPerms(int id)
+{
+    return db->getPerms(id);
+}

@@ -17,11 +17,6 @@
 
 class MainController;
 
-/*struct groupItem{
-    int id;
-    QString name;
-    QString comment;
-};*/
 
 class ClientCore : public QObject
 {
@@ -45,6 +40,7 @@ signals:
     void groupsToBox(QList<groupItem*> *);
 
     void updateCurHall(int, QString, QString, int);
+    void adUsr(int, QString, QString, int, QString, QString, QString);
 
 public slots:
     bool connectToServer(QString ip, quint16 port);
@@ -69,6 +65,11 @@ public slots:
     void delHall(int id);
 
     void createReport();
+    void ifNeedForUsers();
+
+    void creAcc(QString log, QString pass, int grId, QString nam, QString sur, QString mid);
+    void modAcc(int id, QString log, QString pass, int grId, QString nam, QString sur, QString mid);
+    void delAcc(int id);
 private:
     QTcpSocket* mainSocket;
     bool isConnected = false;

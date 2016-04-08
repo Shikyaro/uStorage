@@ -5,8 +5,8 @@ MainController::MainController(QObject *parent) : QObject(parent)
     mainWindow = new MainWindow();
     loginWidget = new LoginWidget();
     groups = new GroupWidget();
-
     client = new ClientCore(this);
+    users = new UserWidget();
 
     connect(loginWidget, SIGNAL(login(QString,QString,QString)), client, SLOT(login(QString,QString,QString)));
 
@@ -45,6 +45,14 @@ MainController::MainController(QObject *parent) : QObject(parent)
     connect(mainWindow, SIGNAL(delHallSig(int)), client, SLOT(delHall(int)));
 
     connect(mainWindow, SIGNAL(creReport()), client, SLOT(createReport()));
+    connect(this, SIGNAL(need4users()), client, SLOT(ifNeedForUsers()));
+
+    connect(client, SIGNAL(adUsr(int,QString,QString,int,QString,QString,QString)), users, SLOT(addRow(int,QString,QString,int,QString,QString,QString)));
+    connect(mainWindow, SIGNAL(openUsrMenu()), this, SLOT(openUserMenu()));
+
+    connect(users, SIGNAL(adUsr(QString,QString,int,QString,QString,QString)), client, SLOT(creAcc(QString,QString,int,QString,QString,QString)));
+    connect(users, SIGNAL(modUsr(int,QString,QString,int,QString,QString,QString)), client, SLOT(modAcc(int,QString,QString,int,QString,QString,QString)));
+    connect(users, SIGNAL(delUsr(int)), client, SLOT(delAcc(int)));
 
 }
 MainController::~MainController()
@@ -74,5 +82,23 @@ void MainController::openGroupMenu()
     emit this->needGroups();
 }
 
+void MainController::openUserMenu()
+{
+    users->close();
+    users->dataAd(false);
+    users->clear();
+    users->show();
+    emit this->need4users();
+}
 
+void MainController::clusrs()
+{
+    users->clear();
+}
+
+void MainController::closAll()
+{
+    users->close();
+    groups->close();
+}
 

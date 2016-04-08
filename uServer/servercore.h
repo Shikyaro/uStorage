@@ -37,6 +37,12 @@ public slots:
     bool updateHall(int id, QString name, QString address, int room);
     bool insertHall(QString name, QString address, int room);
     bool delHall(int id);
+    bool createAcc(QString login, QString pass, int group, QString name, QString surname, QString middle);
+    bool modUser(int id, QString login, QString pass, int group, QString name, QString surname, QString middle);
+    bool delUser(int id);
+    QString getUsers();
+    int getId(QString login);
+    perms getPerms(int id);
 private:
     QList<ServerClient* > clientList;
     Database* db;

@@ -45,6 +45,15 @@ public:
     static const quint8 succAddHall = 26;
     static const quint8 delHall = 27;
     static const quint8 succDelHall = 28;
+    static const quint8 addUsr = 29;
+    static const quint8 delUsr = 30;
+    static const quint8 modUsr = 31;
+    static const quint8 succAddUsr = 32;
+    static const quint8 succDelUsr = 33;
+    static const quint8 succModUsr = 34;
+    static const quint8 getUsr = 35;
+    static const quint8 permRestrict = 69;
+    static const quint8 err = 36;
 
 signals:
 
@@ -55,6 +64,7 @@ private:
     quint16 blockSize = 0;
     ServerCore *servPtr;
     bool isLoggedIn = false;
+    int uId = 0;
 private slots:
     void onReadyRead();
     void onDisconnect();

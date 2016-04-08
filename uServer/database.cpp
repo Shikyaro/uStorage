@@ -14,9 +14,11 @@ bool Database::initialize(QString hostname, QString dbName, QString username, QS
     db.setUserName(username);
     db.setPassword(password);
 
-    db.open();
+    bool xtr = db.open();
 
-    return db.open();
+    //createAcc("alkor", "alkor", 1, "alkor", "alkor", "alkor");
+
+    return xtr;
     //return true;
 
 
@@ -28,7 +30,7 @@ bool Database::login(QString username, QString password)
         QSqlQuery query;
         query.prepare(QString("SELECT userPassword "
                       "FROM users "
-                      "WHERE userName = \"%1\"").arg(username));
+                      "WHERE userLogin = '%1'").arg(username));
         if (query.exec()){
             query.last();
             return query.value(0)==password;
@@ -292,7 +294,7 @@ bool Database::createAcc(QString login, QString pass, int group, QString name, Q
 {
     QSqlQuery query;
     query.prepare(QString ("INSERT INTO `users` (`userLogin`, `userPassword`, `userGroup`, `userName`, `userSurname`, `userFathername`) "
-                           "VALUES ('%1', '%2', '%3', '%4', '%5', '%6', '')").arg(login).arg(hashPW(pass)).arg(group).arg(name).arg(surname).arg(middle));
+                           "VALUES ('%1', '%2', '%3', '%4', '%5', '%6')").arg(login).arg(pass).arg(group).arg(name).arg(surname).arg(middle));
     if(query.exec()){
         return true;
     }else{
@@ -303,11 +305,114 @@ bool Database::createAcc(QString login, QString pass, int group, QString name, Q
 
 QString Database::hashPW(QString msg)
 {
-    QByteArray *spw = new QByteArray();
+    QByteArray spw;
     QString ret;
-    QDataStream out(spw,QIODevice::WriteOnly);
+    QDataStream out(&spw,QIODevice::WriteOnly);
     out << msg;
-    ret = QCryptographicHash::hash(*spw,QCryptographicHash::Sha3_256).toHex();
+    ret = QCryptographicHash::hash(spw,QCryptographicHash::Sha3_256).toHex();
 
     return ret;
 }
+
+perms Database::getPerms(int id)
+{
+    QSqlQuery query;
+    perms prm;
+    query.prepare(QString ("SELECT usergroups.userAccess, usergroups.hallAccess, usergroups.itemsAccess "
+                           "FROM users "
+                           "INNER JOIN usergroups ON users.userGroup = usergroups.userGroupId "
+                           "WHERE users.userId = %1;").arg(id));
+    if(query.exec()){
+        query.last();
+        prm.usr = query.value("userAccess").toBool();
+        prm.halls = query.value("hallAccess").toBool();
+        prm.items = query.value("itemsAccess").toBool();
+        return prm;
+    }else{
+        qDebug() << query.lastError().databaseText();
+        prm.badQuery = true;
+        return prm;
+    }
+}
+
+QString Database::getUsers()
+{
+    QSqlQuery query;
+    QJsonArray groupsArray;
+    QJsonObject groupsArrayContainer;
+
+    query.prepare(QString("SELECT *"
+                          "FROM users"));
+    if(query.exec()){
+        while(query.next()){
+            QJsonObject group;
+            group.insert("userId", query.value(0).toInt());
+            group.insert("userLogin", query.value(1).toString());
+            group.insert("userPassword", query.value(2).toString());
+            group.insert("userGroup", query.value(3).toInt());
+            group.insert("userName", query.value(4).toString());
+            group.insert("userSurname", query.value(5).toString());
+            group.insert("userFathername", query.value(6).toString());
+
+            groupsArray.append(group);
+        }
+        groupsArrayContainer["usersArray"] = groupsArray;
+
+        QJsonDocument groupsDoc(groupsArrayContainer);
+
+        QString qstr = groupsDoc.toJson(QJsonDocument::Compact);
+
+        qDebug() << qstr;
+
+        return groupsDoc.toJson(QJsonDocument::Compact);
+
+    } else {
+        qDebug() << query.lastError().databaseText();
+        return "NULL";
+    }
+}
+
+bool Database::modUser(int id, QString login, QString pass, int group, QString name, QString surname, QString middle)
+{
+    QSqlQuery query;
+    if(pass != ""){
+        qDebug() << "________________NO__________PASS________";
+        query.prepare(QString ("UPDATE users "
+                               "SET userLogin = '%1', userPassword = '%2', userGroup = %3, userName = '%4', userSurname = '%5', userFathername = '%6' "
+                               "WHERE userId = %7").arg(login).arg(pass).arg(group).arg(name).arg(surname).arg(middle).arg(id));
+    } else {
+        query.prepare(QString ("UPDATE users "
+                               "SET userLogin = '%1', userGroup = %2, userName = '%3', userSurname = '%4', userFathername = '%5' "
+                               "WHERE userId = %6").arg(login).arg(group).arg(name).arg(surname).arg(middle).arg(id));
+    }
+    if(query.exec()){
+        return true;
+    }else{
+        qDebug() << query.lastError().databaseText();
+        return false;
+    }
+}
+
+bool Database::delUser(int id)
+{
+    QSqlQuery query;
+    query.prepare(QString ("DELETE FROM users WHERE userId = %1").arg(id));
+    if(query.exec()){
+        return true;
+    }else{
+        qDebug() << query.lastError().databaseText();
+        return false;
+    }
+}
+ int Database::getId(QString login)
+ {
+     QSqlQuery query;
+     query.prepare(QString ("SELECT userId FROM users WHERE userLogin = '%1'").arg(login));
+     if(query.exec()){
+         query.last();
+         return query.value(0).toInt();
+     }else{
+         qDebug() << query.lastError().databaseText();
+         return -1;
+     }
+ }

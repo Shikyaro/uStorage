@@ -11,7 +11,10 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QDebug>
+#include <QDataStream>
 #include <QCryptographicHash>
+#include "permissions.h"
+
 
 class Database : public QObject
 {
@@ -41,7 +44,14 @@ public slots:
     bool insertHall(QString name, QString address, int room);
     bool delHall(int id);
 
+
+    perms getPerms(int id);
+    QString getUsers();
     bool createAcc(QString login, QString pass, int group, QString name, QString surname, QString middle);
+    bool modUser(int id, QString login, QString pass, int group, QString name, QString surname, QString middle);
+    bool delUser(int id);
+    int getId(QString login);
+
 private:
     QSqlDatabase db;
     QString hashPW(QString msg);

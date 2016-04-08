@@ -52,6 +52,7 @@ void ServerClient::onReadyRead()
 
             if (servPtr->login(logp.at(0),logp.at(1))){
                 isLoggedIn = true;
+                uId = servPtr->getId(logp.at(0));
                 qDebug() << "user " << logp.at(0) << "connected";
                 this->sendBlock(succLoginComm, NULL);
                 halls = servPtr->getHalls();
@@ -78,6 +79,7 @@ void ServerClient::onReadyRead()
                 this->sendBlock(getHallItems, &block);
             }else{
                 //eRRoR
+                sendBlock(err, NULL);
             }
             break;
         }
@@ -91,6 +93,7 @@ void ServerClient::onReadyRead()
                 this->sendBlock(getItemGroups, &block);
             }else{
                 //eRRoR
+                sendBlock(err, NULL);
             }
 
             break;
@@ -100,17 +103,23 @@ void ServerClient::onReadyRead()
             QString itemGroup;
 
             in >> itemGroup;
+            if(servPtr->getPerms(uId).items){
 
-            QJsonDocument itemGroupDoc = QJsonDocument::fromJson(itemGroup.toUtf8());
-            QJsonObject group2edit = itemGroupDoc.object();
 
-            if(!servPtr->updateGroups(group2edit["groupId"].toInt(),
-                                     group2edit["groupName"].toString(),
-                                     group2edit["groupComment"].toString()))
-            {
-                //eRRoR
-            }else{
-                this->sendBlock(succEditItem, NULL);
+                QJsonDocument itemGroupDoc = QJsonDocument::fromJson(itemGroup.toUtf8());
+                QJsonObject group2edit = itemGroupDoc.object();
+
+                if(!servPtr->updateGroups(group2edit["groupId"].toInt(),
+                                          group2edit["groupName"].toString(),
+                                          group2edit["groupComment"].toString()))
+                {
+                    //eRRoR
+                    sendBlock(err, NULL);
+                }else{
+                    this->sendBlock(succEditItem, NULL);
+                }
+            } else {
+                sendBlock(permRestrict, NULL);
             }
             break;
         }
@@ -119,16 +128,22 @@ void ServerClient::onReadyRead()
             QString itemGroup;
 
             in >> itemGroup;
+            if(servPtr->getPerms(uId).items){
 
-            QJsonDocument itemGroupDoc = QJsonDocument::fromJson(itemGroup.toUtf8());
-            QJsonObject newGr = itemGroupDoc.object();
 
-            if(!servPtr->insertGroup(newGr["groupName"].toString(),
-                                     newGr["groupComment"].toString()))
-            {
-                //eRRoR
-            }else{
-                this->sendBlock(succAddGroup, NULL);
+                QJsonDocument itemGroupDoc = QJsonDocument::fromJson(itemGroup.toUtf8());
+                QJsonObject newGr = itemGroupDoc.object();
+
+                if(!servPtr->insertGroup(newGr["groupName"].toString(),
+                                         newGr["groupComment"].toString()))
+                {
+                    //eRRoR
+                    sendBlock(err, NULL);
+                }else{
+                    this->sendBlock(succAddGroup, NULL);
+                }
+            } else {
+                sendBlock(permRestrict, NULL);
             }
             break;
         }
@@ -137,40 +152,52 @@ void ServerClient::onReadyRead()
             QString itemGroup;
 
             in >> itemGroup;
+            if(servPtr->getPerms(uId).items){
 
-            QJsonDocument itemGroupDoc = QJsonDocument::fromJson(itemGroup.toUtf8());
-            QJsonObject newGr = itemGroupDoc.object();
 
-            if(!servPtr->deleteGroup(newGr["groupId"].toInt()))
-            {
-                //eRRoR
-            }else{
-                this->sendBlock(succDelGroup, NULL);
+                QJsonDocument itemGroupDoc = QJsonDocument::fromJson(itemGroup.toUtf8());
+                QJsonObject newGr = itemGroupDoc.object();
+
+                if(!servPtr->deleteGroup(newGr["groupId"].toInt()))
+                {
+                    //eRRoR
+                    sendBlock(err, NULL);
+                }else{
+                    this->sendBlock(succDelGroup, NULL);
+                }
+            } else {
+                sendBlock(permRestrict, NULL);
             }
             break;
 
         }
         case addItem:
         {
-            //qDebug() << "addItem";
             QString itm;
 
             in >> itm;
-            qDebug() << itm;
+            if(servPtr->getPerms(uId).items){
+                //qDebug() << "addItem";
 
-            QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
-            QJsonObject newIt = itmDoc.object();
+                qDebug() << itm;
 
-            if(!servPtr->insertItem(newIt["itemName"].toString(),
-                                    newIt["itemInventoryNum"].toString(),
-                                    newIt["itemGroup"].toInt(),
-                                    newIt["itemCount"].toInt(),
-                                    newIt["itemComment"].toString(),
-                                    newIt["itemHallId"].toInt()))
-            {
-                //eRRoR
-            }else{
-                this->sendBlock(succAddItem, NULL);
+                QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+                QJsonObject newIt = itmDoc.object();
+
+                if(!servPtr->insertItem(newIt["itemName"].toString(),
+                                        newIt["itemInventoryNum"].toString(),
+                                        newIt["itemGroup"].toInt(),
+                                        newIt["itemCount"].toInt(),
+                                        newIt["itemComment"].toString(),
+                                        newIt["itemHallId"].toInt()))
+                {
+                    //eRRoR
+                    sendBlock(err, NULL);
+                }else{
+                    this->sendBlock(succAddItem, NULL);
+                }
+            } else {
+                sendBlock(permRestrict, NULL);
             }
             break;
         }
@@ -179,22 +206,28 @@ void ServerClient::onReadyRead()
             QString itm;
 
             in >> itm;
-            qDebug() << itm;
+            if(servPtr->getPerms(uId).items){
 
-            QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
-            QJsonObject newIt = itmDoc.object();
+                qDebug() << itm;
 
-            if(!servPtr->updateItem(newIt["itemId"].toInt(),
-                                    newIt["itemName"].toString(),
-                                    newIt["itemInventoryNum"].toString(),
-                                    newIt["itemGroup"].toInt(),
-                                    newIt["itemCount"].toInt(),
-                                    newIt["itemComment"].toString(),
-                                    newIt["itemHallId"].toInt()))
-            {
-                //eRRoR
-            }else{
-                this->sendBlock(succAddItem, NULL);
+                QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+                QJsonObject newIt = itmDoc.object();
+
+                if(!servPtr->updateItem(newIt["itemId"].toInt(),
+                                        newIt["itemName"].toString(),
+                                        newIt["itemInventoryNum"].toString(),
+                                        newIt["itemGroup"].toInt(),
+                                        newIt["itemCount"].toInt(),
+                                        newIt["itemComment"].toString(),
+                                        newIt["itemHallId"].toInt()))
+                {
+                    //eRRoR
+                    sendBlock(err, NULL);
+                }else{
+                    this->sendBlock(succAddItem, NULL);
+                }
+            } else {
+                sendBlock(permRestrict, NULL);
             }
             break;
         }
@@ -203,15 +236,21 @@ void ServerClient::onReadyRead()
             QString itemGroup;
 
             in >> itemGroup;
+            if(servPtr->getPerms(uId).items){
 
-            QJsonDocument itemGroupDoc = QJsonDocument::fromJson(itemGroup.toUtf8());
-            QJsonObject newGr = itemGroupDoc.object();
 
-            if(!servPtr->deleteItem(newGr["itemId"].toInt(), newGr["hallId"].toInt()))
-            {
-                //eRRoR
-            }else{
-                this->sendBlock(succDelItem, NULL);
+                QJsonDocument itemGroupDoc = QJsonDocument::fromJson(itemGroup.toUtf8());
+                QJsonObject newGr = itemGroupDoc.object();
+
+                if(!servPtr->deleteItem(newGr["itemId"].toInt(), newGr["hallId"].toInt()))
+                {
+                    //eRRoR
+                    sendBlock(err, NULL);
+                }else{
+                    this->sendBlock(succDelItem, NULL);
+                }
+            } else {
+                sendBlock(permRestrict, NULL);
             }
             break;
         }
@@ -220,24 +259,30 @@ void ServerClient::onReadyRead()
             QString itm;
 
             in >> itm;
-            qDebug() << itm;
+            if(servPtr->getPerms(uId).halls){
 
-            QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
-            QJsonObject newIt = itmDoc.object();
+                qDebug() << itm;
 
-            if(!servPtr->updateHall(newIt["hallId"].toInt(),
-                                    newIt["hallName"].toString(),
-                                    newIt["hallAddr"].toString(),
-                                    newIt["hallRoom"].toInt()))
+                QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+                QJsonObject newIt = itmDoc.object();
 
-            {
-                //eRRoR
-            }else{
-                QByteArray block;
-                QDataStream out(&block, QIODevice::WriteOnly);
-                out << itm;
+                if(!servPtr->updateHall(newIt["hallId"].toInt(),
+                                        newIt["hallName"].toString(),
+                                        newIt["hallAddr"].toString(),
+                                        newIt["hallRoom"].toInt()))
 
-                this->sendBlock(succModHall, &block);
+                {
+                    //eRRoR
+                    sendBlock(err, NULL);
+                }else{
+                    QByteArray block;
+                    QDataStream out(&block, QIODevice::WriteOnly);
+                    out << itm;
+
+                    this->sendBlock(succModHall, &block);
+                }
+            } else {
+                sendBlock(permRestrict, NULL);
             }
             break;
         }
@@ -246,19 +291,25 @@ void ServerClient::onReadyRead()
             QString itm;
 
             in >> itm;
-            qDebug() << itm;
+            if(servPtr->getPerms(uId).halls){
 
-            QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
-            QJsonObject newIt = itmDoc.object();
+                qDebug() << itm;
 
-            if(!servPtr->insertHall(newIt["hallName"].toString(),
-                                    newIt["hallAddr"].toString(),
-                                    newIt["hallRoom"].toInt()))
+                QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+                QJsonObject newIt = itmDoc.object();
 
-            {
-                //eRRoR
-            }else{
-                this->sendBlock(succAddHall, NULL);
+                if(!servPtr->insertHall(newIt["hallName"].toString(),
+                                        newIt["hallAddr"].toString(),
+                                        newIt["hallRoom"].toInt()))
+
+                {
+                    //eRRoR
+                    sendBlock(err, NULL);
+                }else{
+                    this->sendBlock(succAddHall, NULL);
+                }
+            } else {
+                sendBlock(permRestrict, NULL);
             }
             break;
         }
@@ -267,17 +318,131 @@ void ServerClient::onReadyRead()
             QString itm;
 
             in >> itm;
-            qDebug() << itm;
+            if(servPtr->getPerms(uId).halls){
 
-            QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
-            QJsonObject newIt = itmDoc.object();
+                qDebug() << itm;
 
-            if(!servPtr->delHall(newIt["hallId"].toInt()))
+                QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+                QJsonObject newIt = itmDoc.object();
 
-            {
-                //eRRoR
-            }else{
-                this->sendBlock(succDelHall, NULL);
+                if(!servPtr->delHall(newIt["hallId"].toInt()))
+
+                {
+                    //eRRoR
+                    sendBlock(err, NULL);
+                }else{
+                    this->sendBlock(succDelHall, NULL);
+                }
+            } else {
+                sendBlock(permRestrict, NULL);
+            }
+            break;
+        }
+        case getUsr:
+        {
+            qDebug() << "_______________________GUSR_____________________";
+            if(servPtr->getPerms(uId).usr){
+                QString itemGroups = servPtr->getUsers();
+                if (itemGroups!="NULL"){
+                    QByteArray block;
+                    QDataStream out(&block, QIODevice::WriteOnly);
+                    out << itemGroups;
+                    this->sendBlock(getUsr, &block);
+                }else{
+                    //eRRoR
+                    sendBlock(err, NULL);
+                }
+            } else {
+                sendBlock(permRestrict, NULL);
+            }
+            break;
+        }
+        case addUsr:
+        {
+            QString itm;
+
+            in >> itm;
+            if(servPtr->getPerms(uId).usr){
+
+                qDebug() << itm;
+
+                QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+                QJsonObject newIt = itmDoc.object();
+
+                if(!servPtr->createAcc(newIt["userLogin"].toString(),
+                                       newIt["userPassword"].toString(),
+                                       newIt["userGroup"].toInt(),
+                                       newIt["userName"].toString(),
+                                       newIt["userSurname"].toString(),
+                                       newIt["userFathername"].toString()))
+
+
+                {
+                    //eRRoR
+                    sendBlock(err, NULL);
+                }else{
+                    this->sendBlock(succAddUsr, NULL);
+                }
+            } else {
+                sendBlock(permRestrict, NULL);
+            }
+            break;
+        }
+        case modUsr:
+        {
+            QString itm;
+
+            in >> itm;
+            if(servPtr->getPerms(uId).usr){
+
+                qDebug() << itm;
+
+                QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+                QJsonObject newIt = itmDoc.object();
+
+                if(!servPtr->modUser(  newIt["userId"].toInt(),
+                                       newIt["userLogin"].toString(),
+                                       newIt["userPassword"].toString(),
+                                       newIt["userGroup"].toInt(),
+                                       newIt["userName"].toString(),
+                                       newIt["userSurname"].toString(),
+                                       newIt["userFathername"].toString()))
+
+
+                {
+                    //eRRoR
+                    sendBlock(err, NULL);
+                }else{
+                    this->sendBlock(succModUsr, NULL);
+                }
+            } else {
+                sendBlock(permRestrict, NULL);
+            }
+            break;
+        }
+        case delUsr:
+        {
+            QString itm;
+
+            in >> itm;
+            if(servPtr->getPerms(uId).usr){
+
+                qDebug() << itm;
+
+                QJsonDocument itmDoc = QJsonDocument::fromJson(itm.toUtf8());
+                QJsonObject newIt = itmDoc.object();
+
+                if(!servPtr->delUser(newIt["userId"].toInt()))
+
+
+                {
+                    //eRRoR
+                    sendBlock(err, NULL);
+                }else{
+                    this->sendBlock(succDelUsr, NULL);
+                }
+            } else {
+                sendBlock(permRestrict, NULL);
             }
             break;
         }

@@ -50,7 +50,6 @@ GroupWidget::GroupWidget(QWidget *parent) : QWidget(parent)
 
 void GroupWidget::onSelect(int rowId)
 {
-    qDebug() << dataAdded;
     groupTable->selectionModel()->clearSelection();
     //groupTable->clearSelection();
     if(dataAdded){
